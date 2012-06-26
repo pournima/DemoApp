@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="hello">Hello World, GitHubAppActivity!</string>
+    <string name="app_name">GitHub App</string>
+	<string name="UserName">User Name</string>
+	<string name="Password">Password</string>
+	<string name="Login">Login</string>
+	
+	<string name="Repository">Repository</string>
+	<string name="Branch">Branch</string>
+	<string name="Commit">Commits</string>
+	
+	<string name="Name">Commiter Name:</string>
+	<string name="Date">Date :</string>
+	<string name="Message">Message :</string>
+</resources>

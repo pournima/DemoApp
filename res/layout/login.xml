@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+ 
+ <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/body"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical"
+            android:padding="10dip"
+            android:background="#FFFFFF" >
+	
+		 <ImageView android:src="@drawable/github" 
+		   		android:id="@+id/SplashView" 
+		    	android:layout_width="fill_parent"
+		   		android:layout_height="100dp"
+		   		android:paddingTop="20dp"
+		   		android:contentDescription="@string/app_name" />    
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/UserName"
+                android:textColor="#000000"/>
+
+            <EditText
+                android:id="@+id/editTextUserName"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dip"
+                android:layout_marginTop="5dip"
+                android:singleLine="true"
+                android:hint="@string/UserName"
+                 />
+         
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/Password" 
+                android:textColor="#000000"/>
+
+            <EditText
+                android:id="@+id/editTextPassword"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dip"
+                android:password="true"
+                android:singleLine="true"
+                android:hint="@string/Password"
+                 />
+           
+            <Button
+                android:id="@+id/btnLoginIn"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dip"
+                android:text="@string/Login" />
+
+       </LinearLayout>
