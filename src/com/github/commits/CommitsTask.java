@@ -3,18 +3,15 @@ package com.github.commits;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.message.BasicNameValuePair;
-
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
-
 import com.github.helper.AppStatus;
-import com.github.repository.RepositoryActivity;
+import com.github.helper.Constants;
 import com.github.rest.RestClient;
 
 public class CommitsTask extends AsyncTask<String, Void, String> {
@@ -22,7 +19,8 @@ public class CommitsTask extends AsyncTask<String, Void, String> {
 	private CommitsActivity context;
 	AppStatus mAppStatus;
 	private String strBranchName;
-	private String path_url;
+	private String strUserName;
+	private String strRepoName;
 	Handler mhandler;
 
 
@@ -37,11 +35,12 @@ public class CommitsTask extends AsyncTask<String, Void, String> {
 	}
 
 
-	public CommitsTask(CommitsActivity context,String branchName,String url)
+	public CommitsTask(CommitsActivity context,String branchName,String userName,String repoName)
 	{
 		this.context = context;
 		this.strBranchName=branchName;
-		this.path_url=url;
+		this.strUserName=userName;
+		this.strRepoName=repoName;
 		mAppStatus =new AppStatus();
 	}
 	
@@ -54,25 +53,59 @@ public class CommitsTask extends AsyncTask<String, Void, String> {
 		String strJsonReponse = null;
 			
 			List<NameValuePair> params = new ArrayList<NameValuePair>(2);
-			params.add(new BasicNameValuePair("sha", strBranchName));
-									
-			try {	
-			if (mAppStatus.isOnline(context)) 
+			
+			params.add(new BasicNameValuePair(Constants.AUTH_KEY, mAppStatus
+			.getSharedStringValue(Constants.AUTH_KEY)));
+			
+			if(Constants.flagCommit){
+				params.add(new BasicNameValuePair("username", strUserName));
+				params.add(new BasicNameValuePair("repository", strRepoName));
+				params.add(new BasicNameValuePair(Constants.BRANCH, strBranchName));
+						
+				try {	
+				if (mAppStatus.isOnline(context)) 
+				{
+					
+					strJsonReponse = RestClient.getInstance(context).doApiCall(Constants.strCommits, "GET", params);
+				}
+				else{
+					Log.d("Please check you internet connection", "You are offline");
+				}
+			
+//			} catch (ClientProtocolException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			}
+			else
 			{
-				
-				strJsonReponse = RestClient.getInstance(context).doApiCall(path_url, "GET", params);
+				params.add(new BasicNameValuePair("owner", strUserName));
+				params.add(new BasicNameValuePair("repository", strRepoName));
+				params.add(new BasicNameValuePair(Constants.BRANCH, strBranchName));
+						
+				try {	
+				if (mAppStatus.isOnline(context)) 
+				{
+					
+					strJsonReponse = RestClient.getInstance(context).doApiCall(Constants.strOrganisationCommits, "GET", params);
+				}
+				else{
+					Log.d("Please check you internet connection", "You are offline");
+				}
+			
+//			} catch (ClientProtocolException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-			else{
-				Log.d("Please check you internet connection", "You are offline");
 			}
-		
-//		} catch (ClientProtocolException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+			
+
 		
 		return strJsonReponse;
 	

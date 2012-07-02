@@ -18,9 +18,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		// TODO Auto-generated method stub
-		try {
+		try {	
+			
 			String createSql = "CREATE TABLE Repository (_id INTEGER PRIMARY KEY AUTOINCREMENT, "
-					+ "id INTEGER	 , "
 					+ "name TEXT);";
 			
 			Log.v("GitHub", "Creating Repository: " + createSql);
@@ -40,6 +40,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			Log.v("GitHub", "Creating Commits: " + createSql);
 			db.execSQL(createSql);
 	
+			createSql = null;
+			createSql = "CREATE TABLE Organisation (_id INTEGER PRIMARY KEY AUTOINCREMENT, "
+					+ "org_name TEXT );";
+			Log.v("GitHub", "Creating Organisation: " + createSql);
+			db.execSQL(createSql);
+		
+			createSql=null;
+			createSql = "CREATE TABLE OrganisationRepository (_id INTEGER PRIMARY KEY AUTOINCREMENT, "
+					+ "name TEXT , "
+					+ "owner TEXT);";
+			
+			Log.v("GitHub", "Creating Organisation Repository: " + createSql);
+			db.execSQL(createSql);
+			
+			
+			
+			
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

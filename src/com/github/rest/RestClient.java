@@ -27,7 +27,7 @@ import android.util.Log;
 
 public class RestClient {
 	
-	public static String base_url = "https://api.github.com/";
+	public static String base_url ="http://electric-warrior-1226.heroku.com"; //"https://api.github.com/";
 
 	public static String getBase_url() {
 		return base_url;
@@ -93,18 +93,18 @@ public class RestClient {
 			Log.v("REstClient", "####url GET: " + base_url + url);
 			
 
-			HttpGet httpget = new HttpGet(base_url + url);
-			ResponseHandler<String> responseHandler = new BasicResponseHandler();
-			result = httpclient.execute(httpget, responseHandler);
-			return result;
+//			HttpGet httpget = new HttpGet(base_url + url);
+//			ResponseHandler<String> responseHandler = new BasicResponseHandler();
+//			result = httpclient.execute(httpget, responseHandler);
+//			return result;
 					
 		  
 			
-//			HttpGet httpGet = new HttpGet(base_url + url);
-//			ResponseHandler<String> responseHandler = new BasicResponseHandler();
-//			httpGet.setHeader("accept", "text/mobile");
-//			result = httpclient.execute(httpGet, responseHandler);
-//			return result;
+			HttpGet httpGet = new HttpGet(base_url + url);
+			ResponseHandler<String> responseHandler = new BasicResponseHandler();
+			httpGet.setHeader("accept", "text/mobile");
+			result = httpclient.execute(httpGet, responseHandler);
+			return result;
 
 		}
 

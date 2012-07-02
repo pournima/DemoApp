@@ -6,10 +6,15 @@
 	<string name="UserName">User Name</string>
 	<string name="Password">Password</string>
 	<string name="Login">Login</string>
+	<string name="menuLogOut">Log Out</string>
+	<string name="menuOrganisation">Organisation</string>
+	<string name="menuUser">User</string>
 	
+	<string name="Organisation">Organisation</string>
 	<string name="Repository">Repository</string>
 	<string name="Branch">Branch</string>
 	<string name="Commit">Commits</string>
+	
 	
 	<string name="Name">Commiter Name:</string>
 	<string name="Date">Date :</string>

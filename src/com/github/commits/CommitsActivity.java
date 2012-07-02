@@ -2,36 +2,36 @@ package com.github.commits;
 
 import java.util.ArrayList;
 
+import com.github.GroupActivity;
+import com.github.LoginInActivity;
 import com.github.R;
-import com.github.database.DbAdapter;
+import com.github.branch.BranchActivity;
 import com.github.helper.AppStatus;
 import com.github.helper.CommitsParserResult;
 import com.github.helper.Constants;
-import com.github.helper.RepositoryParserResult;
-import com.github.repository.RepositoryActivity;
-import com.github.repository.RepositoryDBAdapter;
-import com.github.repository.RepositoryDataModel;
-import com.github.repository.RepositoryListAdapter;
-import com.github.repository.RepositoryTask;
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.Toast;
 
-public class CommitsActivity extends Activity {
+public class CommitsActivity extends GroupActivity {
 	
 	public ProgressDialog mProgressDialog;
 	private ProgressDialog loading;
 	Handler mhandler;
 	
 	String userName;
+	String owner;
 	String branchName;
 	String repoName;
 	
@@ -45,7 +45,7 @@ public class CommitsActivity extends Activity {
 	CommitListAdapter mCommitListAdapter;
 	
 		@Override
-		protected void onCreate(Bundle savedInstanceState) {
+		public void onCreate(Bundle savedInstanceState) {
 			// TODO Auto-generated method stub
 			super.onCreate(savedInstanceState);
 			setContentView(R.layout.commit_layout);
@@ -67,23 +67,31 @@ public class CommitsActivity extends Activity {
 		mCommitsDataModel = new CommitsDataModel();
 
 		try {
+			
+			if(Constants.flagCommit){
+				userName=getIntent().getExtras().getString("username");
+			}else{
+				owner=getIntent().getExtras().getString("owner");
+				userName=owner;
+			}
 			//getting all commits Data from API into response
-			userName=getIntent().getExtras().getString("username");
+			
 			branchName=getIntent().getExtras().getString("branchname");
 			repoName=getIntent().getExtras().getString("reponame");
 			
-			String url="repos/"+userName+"/"+repoName+"/commits";
-				
 			
 			//String pageNumber = new Integer(PageNo).toString();
-			
-			
-			
-				showDialog(0);
+			if (mAppStatus.isOnline(CommitsActivity.this)) {	
+				showDialog(0);				
+				
 				mCommitsDBAdapter.deleteAll();
-			
-				CommitsTask mCommitsTask = new CommitsTask(this, branchName,url);
-				mCommitsTask.execute(branchName,url);
+				
+				CommitsTask mCommitsTask = new CommitsTask(this, branchName,userName,repoName);
+				mCommitsTask.execute(branchName);
+				
+			}else{
+				generateList();
+			}
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -101,6 +109,8 @@ public class CommitsActivity extends Activity {
 			Log.i("Responce", "Is Empty []");
 		}
 		else{
+			
+			
 			CommitsParserResult commitsParse=new CommitsParserResult();
 			ArrayList<CommitsDataModel> commitDataModel=commitsParse.parseCommitsData(strJsonResponse);
 			
@@ -180,4 +190,34 @@ public class CommitsActivity extends Activity {
 		mProgressDialog = dialog;
 		return dialog;
 	}
+	
+	
+//	@Override
+//	public boolean onCreateOptionsMenu(Menu menu) {
+//		MenuInflater inflater = getMenuInflater();
+//		inflater.inflate(R.menu.menu, menu);
+//		return true;
+//
+//	}
+//
+//	@Override
+//	public boolean onOptionsItemSelected(MenuItem item) {
+//		 if(item.getItemId()==R.id.menuLogOut){
+//			//***LogOut
+//			
+//			AppStatus mAppStatus=new AppStatus();
+//			mAppStatus.clearAuthKey(Constants.AUTH_KEY);
+//			
+//			Intent intent=new Intent(getApplicationContext(),LoginInActivity.class);
+//			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//			intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+//			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);			
+//			startActivity(intent);
+//			finish();	
+//		
+//		}
+//		return true;
+//	}
+	
 }

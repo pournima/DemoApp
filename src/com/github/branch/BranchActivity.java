@@ -2,11 +2,15 @@ package com.github.branch;
 
 import java.util.ArrayList;
 
+import com.github.GroupActivity;
+import com.github.LoginInActivity;
 import com.github.R;
 import com.github.commits.CommitsActivity;
 import com.github.helper.AppStatus;
 import com.github.helper.BranchParserResult;
 import com.github.helper.Constants;
+import com.github.repository.RepositoryActivity;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -16,6 +20,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -38,8 +45,9 @@ public class BranchActivity extends Activity {
 	String userName;
 	String branchName;
 	String repoName;
+	
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	public void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.branch_layout);
@@ -58,19 +66,23 @@ public class BranchActivity extends Activity {
 
 		try {
 			//getting all branches Data from API into response
+			//userName=mAppStatus.getSharedUserName(Constants.LOGIN_USERNAME);
 			userName=getIntent().getExtras().getString("username");
 			repoName=getIntent().getExtras().getString("reponame");
 			
-			String url="repos/"+userName+"/"+repoName+"/branches";
-				
 			//String pageNumber = new Integer(PageNo).toString();
-	
+			if (mAppStatus.isOnline(BranchActivity.this)) {		
 				showDialog(0);
+				
 				mBranchDBAdapter.deleteAll();
 			
-				BranchTask mBranchTask = new BranchTask(this, userName,url);
-				mBranchTask.execute(userName,url);
-
+				BranchTask mBranchTask = new BranchTask(this, userName,repoName);
+				mBranchTask.execute(userName);
+			}else{
+				generateList();
+				onListClick();
+			}
+			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -86,6 +98,7 @@ public class BranchActivity extends Activity {
 			Log.i("Responce", "Is Empty []");
 		}
 		else{
+	
 			BranchParserResult branchParse=new BranchParserResult();
 			ArrayList<BranchDataModel> branchDataModel=branchParse.parseBranchData(strJsonResponse);
 			
@@ -124,32 +137,27 @@ public class BranchActivity extends Activity {
 					
 					branchName = (branchData.get(position)).toString();
 					Log.d("branch name---", "" + branchName);
-			
-
-					String url="repos/"+userName+"/"+repoName+"/commits";
-					
+				
 					//String pageNumber = new Integer(PageNo).toString();
-						
-					Intent intent = new Intent(BranchActivity.this,CommitsActivity.class);
+					Constants.flagCommit=true;
+					Intent intent = new Intent(getParent(),CommitsActivity.class);
 					
 					intent.putExtra("username", userName);
 					intent.putExtra("reponame", repoName);
 					intent.putExtra("branchname",branchName);
-					startActivity(intent);
+					//startActivity(intent);
+					
+					GroupActivity parentActivity = (GroupActivity)getParent();
+					parentActivity.startChildActivity("branch intent", intent);
+					
 					
 				} else {
-					// dismissDialog(0);
 					Log.d("Please check you internet connection", "Check");
 					//showMessage("Please check you internet connection!!");
-
 				}
 			}
 		});
-		
-		
 		}
-	
-	
 	
 	void showLoading(final boolean show, final String title, final String msg) {
 		mhandler.post(new Runnable() {
@@ -200,4 +208,36 @@ public class BranchActivity extends Activity {
 		mProgressDialog = dialog;
 		return dialog;
 	}
+	
+//	@Override
+//	public boolean onCreateOptionsMenu(Menu menu) {
+//		MenuInflater inflater = getMenuInflater();
+//		inflater.inflate(R.menu.menu, menu);
+//		return true;
+//
+//	}
+//
+//	@Override
+//	public boolean onOptionsItemSelected(MenuItem item) {
+//		 if(item.getItemId()==R.id.menuLogOut){
+//			//***LogOut
+//			
+//			AppStatus mAppStatus=new AppStatus();
+//			mAppStatus.clearAuthKey(Constants.AUTH_KEY);
+//			
+//
+//			Intent intent=new Intent(getApplicationContext(),LoginInActivity.class);
+//			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//			intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+//			//intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);			
+//			
+//			startActivity(intent);
+//			finish();
+//			
+//		
+//		}
+//		return true;
+//	}
+
 }

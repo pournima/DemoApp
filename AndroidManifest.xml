@@ -11,8 +11,6 @@
     <application
         android:icon="@drawable/github_appicon"
         android:label="@string/app_name" >
-     
-
         
         <activity
             android:name=".SplashScreen"
@@ -24,6 +22,10 @@
             </intent-filter>
         </activity>
         
+        <activity
+            android:name=".GroupActivity">
+        </activity>
+        
           <activity
             android:name=".LoginInActivity">
         </activity>
@@ -31,19 +33,44 @@
         <activity
             android:name=".GitHubAppActivity">
         </activity>
-        
-      <activity
-            android:name="com.github.repository.RepositoryActivity">
+       
+        <activity
+            android:name="com.github.repository.GroupRepositoryActivity">
         </activity>
-
-           <activity
-            android:name="com.github.commits.CommitsActivity">
+        
+        <activity
+            android:name="com.github.repository.RepositoryActivity">
         </activity>
 
        <activity
             android:name="com.github.branch.BranchActivity">
         </activity>
+
+       
+        <activity
+            android:name="com.github.commits.CommitsActivity">
+        </activity>
         
+       <activity
+            android:name="com.github.organisation.OrganisationActivity">
+        </activity>
+        
+       <activity
+            android:name="com.github.organisation.OrganisationRepositoryActivity">
+       </activity>
+
+       <activity
+            android:name="com.github.organisation.OrganisationBranchActivity">
+       </activity>
+
+       <activity
+            android:name="com.github.organisation.OrganisationCommitActivity">
+       </activity>
+
+       <activity
+            android:name="com.github.organisation.GroupOrganisationRepositoryActivity">
+       </activity>
+       
     </application>
 
 </manifest>

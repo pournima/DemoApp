@@ -18,53 +18,33 @@ public class CommitsParserResult {
 	public ArrayList<CommitsDataModel> parseCommitsData(String strJsonReponse)
 	{
 	     ArrayList<CommitsDataModel> commitsObjArray = new ArrayList<CommitsDataModel>();
-	     Log.i("index.....", "inside parser");
+	     Log.i("index.....", "inside commit parser");
 		try {
-			JSONArray repositoryJsonArray = new JSONArray(strJsonReponse);
 			
-			for (int i = 0; i < repositoryJsonArray.length(); i++) {
+			JSONObject mJsonObjectCommits = new JSONObject(strJsonReponse);
+			
+			String strCommits = mJsonObjectCommits.getString("commits");
+			
+			JSONArray commitsJsonArray = new JSONArray(strCommits);
+			
+			for (int i = 0; i < commitsJsonArray.length(); i++) {
 				
 				CommitsDataModel mCommitsDataModel=new CommitsDataModel();
 				
-				Log.i("index.....", String.valueOf(i));
-
-				String strCommit = repositoryJsonArray.getJSONObject(i)
-						.getString("commit");
-				Log.i("commit.......", strCommit);
-				
-				JSONObject mJsonObjectCommit = new JSONObject(strCommit);
-
-				
+				//Name
+				String strName = commitsJsonArray.getJSONObject(i).getString("name");
+				Log.i("Name.....", String.valueOf(strName));
+				mCommitsDataModel.setName(strName);
+						
 				//Message
-				String strMessage = mJsonObjectCommit.getString("message");
-				Log.i("Commiter Name.......", strMessage);
+				String strMessage = commitsJsonArray.getJSONObject(i).getString("message");
+				Log.i("Message.....", String.valueOf(strMessage));
 				mCommitsDataModel.setMessage(strMessage);
 				
-//				//Message
-//				String strMessage = repositoryJsonArray.getJSONObject(i).getString("message");
-//				Log.i("Message.....", String.valueOf(strMessage));
-//				mCommitsDataModel.setMessage(strMessage);
-				
-				
-//				//Commitor data
-//				String strCommiter = repositoryJsonArray.getJSONObject(i)
-//						.getString("committer");
-//				Log.i("Commiter.......", strCommiter);
-				
-				String strCommiter = mJsonObjectCommit.getString("committer");
-				Log.i("Commiter.......", strCommiter);
-
-				JSONObject mJsonObject = new JSONObject(strCommiter);
-				
-				//Commiter name
-				String strName = mJsonObject.getString("name");
-				Log.i("Commiter Name.......", strName);
-				mCommitsDataModel.setName(strName);
-				
-				//commiter date
-				String strDate = mJsonObject.getString("date");
-				Log.i("Commiter Date.......", strDate);
-				mCommitsDataModel.setDate(strDate);			
+				//Date
+				String strDate = commitsJsonArray.getJSONObject(i).getString("date");
+				Log.i("Date.....", String.valueOf(strDate));
+				mCommitsDataModel.setDate(strDate);
 				
 				commitsObjArray.add(mCommitsDataModel);
 				

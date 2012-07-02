@@ -1,22 +1,15 @@
 package com.github.repository;
 
 import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
-
+import com.github.GroupActivity;
+import com.github.LoginTask;
 import com.github.R;
-import com.github.SplashScreen;
 import com.github.branch.BranchActivity;
-import com.github.commits.CommitListAdapter;
-import com.github.commits.CommitsActivity;
-import com.github.commits.CommitsTask;
 import com.github.helper.AppStatus;
 import com.github.helper.Constants;
 import com.github.helper.RepositoryParserResult;
-import com.github.rest.RestClient;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
@@ -25,6 +18,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -38,8 +32,9 @@ public class RepositoryActivity extends Activity {
 	
 	String userName;
 	String repoName;
+	String organisationRepo;
 	
-	Boolean flag=true;
+	//Boolean flag=true;
 	AppStatus mAppStatus;
 	RepositoryDBAdapter mRepositoryDBAdapter;
 	RepositoryDataModel mRepositoryDataModel;
@@ -47,17 +42,41 @@ public class RepositoryActivity extends Activity {
 	String PageNo;
 	ArrayList<RepositoryDataModel> repositoryData;
 	RepositoryListAdapter mRepositoryListAdapter;
+
 	
 		@Override
-		protected void onCreate(Bundle savedInstanceState) {
+		public void onCreate(Bundle savedInstanceState) {
 			// TODO Auto-generated method stub
 			super.onCreate(savedInstanceState);
 			setContentView(R.layout.repository_layout);
 					
-			flag=getIntent().getExtras().getBoolean("LOGIN_FLAG");
-			//tvuser.setText(user);
+			mAppStatus = AppStatus.getInstance(this);
 			
-			getRepositoryData();
+			userName=mAppStatus.getSharedUserName(Constants.LOGIN_USERNAME);
+			//userName=getIntent().getExtras().getString("username");
+			
+			if(Constants.gitflag.booleanValue()){
+				showDialog(0);
+				if (mAppStatus.isOnline(RepositoryActivity.this)) {
+			
+					LoginTask mLoginTask = new LoginTask(RepositoryActivity.this,userName);
+					mLoginTask.execute(userName);
+					
+					if(Constants.flagAuthonticate){
+						getRepositoryData();
+					}
+					
+				} else {
+					
+					Log.v("SPLASH_SCREEN", "You are not online!!!!");
+					// showLoading(false, "", "");
+					warningDialogBox("Please check you internet connection!!");
+				}
+			}else{
+
+				getRepositoryData();
+				
+			}
 			//generateList();
 			//onListClick();
 			
@@ -65,8 +84,6 @@ public class RepositoryActivity extends Activity {
 		
 		
 	private void getRepositoryData(){
-		
-		mAppStatus = AppStatus.getInstance(this);
 
 		mRepositoryDBAdapter = new RepositoryDBAdapter(this,
 				Constants.RepositoryTableName);
@@ -74,15 +91,20 @@ public class RepositoryActivity extends Activity {
 
 		try {
 			//getting all Repo Data from API into response
-			userName=getIntent().getExtras().getString("username");
-			String url="users/"+userName+"/repos";
-			//String pageNumber = new Integer(PageNo).toString();
-							
-				showDialog(0);
 			
-				RepositoryTask mRepositoryTask = new RepositoryTask(this, userName,url);
-				mRepositoryTask.execute(userName,url);
-
+			//String pageNumber = new Integer(PageNo).toString();
+			if (mAppStatus.isOnline(RepositoryActivity.this)) {		
+				showDialog(0);
+				mRepositoryDBAdapter.deleteAll();
+				
+				RepositoryTask mRepositoryTask = new RepositoryTask(this, userName);
+				mRepositoryTask.execute(userName);
+			}
+			else{
+				generateList();
+				onListClick();
+			}
+				
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -90,15 +112,13 @@ public class RepositoryActivity extends Activity {
 		}
 
 	}
+
 	
-	
-	public void repositoryResponce(String strJsonResponse){
-		
+	public void repositoryResponce(String strJsonResponse)
+	{
 		
 		Log.i("repository Response --- ", String.valueOf(strJsonResponse));
-		
-		mRepositoryDBAdapter.deleteAll();
-		
+
 		if(strJsonResponse.equals("[]")){
 			Log.i("Responce", "Is Empty []");
 		}
@@ -109,7 +129,6 @@ public class RepositoryActivity extends Activity {
 			for (RepositoryDataModel obj : repoDataModel) 
 			{
 				ContentValues repositoryValues = new ContentValues();
-				repositoryValues.put(mRepositoryDBAdapter.ID, obj.getId());
 				repositoryValues.put(mRepositoryDBAdapter.NAME,obj.getName());
 				mRepositoryDBAdapter.create(repositoryValues);
 			
@@ -141,17 +160,18 @@ public class RepositoryActivity extends Activity {
 				if (mAppStatus.isOnline(RepositoryActivity.this)) {
 					
 					repoName = (repositoryData.get(position)).toString();
-					Log.d("name---", "" + repoName);
-
-					String url="repos/"+userName+"/"+repoName+"/commits";
+					Log.d("Repository name---", "" + repoName);
 					
 					//String pageNumber = new Integer(PageNo).toString();
-						
-					Intent intent = new Intent(RepositoryActivity.this,BranchActivity.class);
 					
-					intent.putExtra("username", userName);
-					intent.putExtra("reponame", repoName);
-					startActivity(intent);
+					Intent i=new Intent(getParent(), BranchActivity.class);
+					
+					i.putExtra("username", userName);
+					i.putExtra("reponame", repoName);
+					//startActivity(intent);
+					
+					GroupActivity parentActivity = (GroupActivity)getParent();
+					parentActivity.startChildActivity("branch intent", i);
 					
 				} else {
 					// dismissDialog(0);
@@ -165,7 +185,20 @@ public class RepositoryActivity extends Activity {
 		
 		}
 
-	
+
+	/*---------- Backup button captured ----------------- */
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			Log.i("Backup Button", "Pressed");
+			warningDialogBox();
+			
+		}
+
+		return super.onKeyDown(keyCode, event);
+	}
+
 	
 	void showLoading(final boolean show, final String title, final String msg) {
 		mhandler.post(new Runnable() {
@@ -216,4 +249,86 @@ public class RepositoryActivity extends Activity {
 		mProgressDialog = dialog;
 		return dialog;
 	}
+
+	public void warningDialogBox(String warningText) {
+		// TODO Auto-generated method stub
+
+		// prepare the alert box
+		AlertDialog.Builder alertbox = new AlertDialog.Builder(this);
+
+		// set the message to display
+		alertbox.setMessage(warningText);
+
+		// add a neutral button to the alert box and assign a click listener
+		alertbox.setNeutralButton("Ok", new DialogInterface.OnClickListener() {
+
+			// click listener on the alert box
+			public void onClick(DialogInterface arg0, int arg1) {
+				// the button was clicked
+			}
+		});
+
+		// show it
+		alertbox.show();
+	}
+	
+	private void warningDialogBox() {
+		Log.i("Warning......Dialog", "ssssss");
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage("Are you sure you want to exit?")
+				.setCancelable(false)
+				.setPositiveButton("Yes",
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int id) {
+								
+								dialog.dismiss();
+								finish();
+								return;
+							}
+						})
+				.setNegativeButton("No", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						dialog.cancel();
+					}
+				});
+		AlertDialog alert = builder.create();
+		alert.show();
+	}
+	
+//	@Override
+//	public boolean onCreateOptionsMenu(Menu menu) {
+//		MenuInflater inflater = getMenuInflater();
+//		inflater.inflate(R.menu.menu, menu);
+//		return true;
+//
+//	}
+//
+//	@Override
+//	public boolean onOptionsItemSelected(MenuItem item) {
+//		 if(item.getItemId()==R.id.menuLogOut){
+//			//***LogOut
+//
+//			AppStatus mAppStatus=new AppStatus();
+//			mAppStatus.clearAuthKey(Constants.AUTH_KEY);
+//			
+//			Intent intent=new Intent(getApplicationContext(),LoginInActivity.class);
+//			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//			intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//			//intent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+//			//intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//			startActivity(intent);
+//			
+//			finish();
+//			
+//		}else if(item.getItemId()==R.id.menuOrganisation){
+//			
+//			Intent intent=new Intent(getApplicationContext(),OrganisationActivity.class);
+//			startActivity(intent);
+//		}
+//
+//		return true;
+//
+//	}
+
+
 }

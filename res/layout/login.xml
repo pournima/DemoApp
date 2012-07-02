@@ -32,7 +32,7 @@
                 android:hint="@string/UserName"
                  />
          
-
+<!-- 
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
@@ -48,7 +48,8 @@
                 android:singleLine="true"
                 android:hint="@string/Password"
                  />
-           
+      -->
+            
             <Button
                 android:id="@+id/btnLoginIn"
                 android:layout_width="fill_parent"

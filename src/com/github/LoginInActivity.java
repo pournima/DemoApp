@@ -1,7 +1,11 @@
 package com.github;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.github.helper.AppStatus;
-import com.github.repository.RepositoryActivity;
+import com.github.helper.Constants;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -25,8 +29,9 @@ public class LoginInActivity extends Activity {
 	Handler mhandler;
 	
 	EditText txtUserName;
-	EditText txtPassword;
+	//EditText txtPassword;
 	Button btnLogin;
+	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -34,19 +39,23 @@ public class LoginInActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.login);
 		
+		mAppStatus = AppStatus.getInstance(this);
+		
 		txtUserName=(EditText) findViewById(R.id.editTextUserName);
-		txtPassword=(EditText) findViewById(R.id.editTextPassword);
+		//txtPassword=(EditText) findViewById(R.id.editTextPassword);
 		btnLogin=(Button) findViewById(R.id.btnLoginIn);
 			
+		
 		txtUserName.setOnFocusChangeListener(new OnFocusChangeListener() {
 
 			@Override
 			public void onFocusChange(View v, boolean hasFocus) {
 				// Your validation code goes here
-
+				
+				
 				if ((txtUserName.getText().toString().trim()).equals("")) {
 					Log.i("Empty Text", "@@@@@@@@");
-				} 
+				}
 			}
 		});
 		
@@ -63,58 +72,54 @@ public class LoginInActivity extends Activity {
 
 				String strUserName = txtUserName.getText().toString();
 
-				String strPassword = txtPassword.getText().toString(); 
+				//String strPassword = txtPassword.getText().toString(); 
 
 
 				/* Email id and Password is empty or not */
-				if ((strUserName.equals("")) && strPassword.equals("")) {
-					Log.i("Status Validation: ", "Please Enter username Password");
-					warningDialogBox("Please Enter User name or Password.!");
-					return;
-				}
+//				if ((strUserName.equals("")) && strPassword.equals("")) {
+//					Log.i("Status Validation: ", "Please Enter username Password");
+//					warningDialogBox("Please Enter User name or Password.!");
+//					return;
+//				}
 				if (strUserName.equals("")) {
 					Log.i("Status Validation: ", "Please Enter username");
 					warningDialogBox("Please Enter username  ..!");
 					return;
 				}
-				if (strPassword.equals("")) {
-					Log.i("Status Validation: ", "Please Enter password ");
-					warningDialogBox("Please Enter password ..!");
-					return;
-				}
-//				strUserName = strUserName.trim();
-//				validateUsePassword(strUserName, strPassword);
-//				txtPassword.setText("");
+//				if (strPassword.equals("")) {
+//					Log.i("Status Validation: ", "Please Enter password ");
+//					warningDialogBox("Please Enter password ..!");
+//					return;
+//				}
 				
+				strUserName = strUserName.trim();
+				validateUserName(strUserName);
+
+		
 				
-				String name=txtUserName.getText().toString();
-				
-				Intent i=new Intent(LoginInActivity.this, RepositoryActivity.class);
-				i.putExtra("username",name);
-				startActivity(i);
+//				String name=txtUserName.getText().toString();
+//				
+//				Intent i=new Intent(LoginInActivity.this, RepositoryActivity.class);
+//				i.putExtra("username",name);
+//				startActivity(i);
 			}
 		});
 	}
 	
 
-
-
-
-		private void validateUserPassword(final String emailId,
-				final String password) {
-//			showDialog(0);
-//			if (mAppStatus.isOnline(SignInActivity.this)) {
-//		
-//				// showDialog(0);
-//				SignInTask mSignInTask = new SignInTask(SignInActivity.this,
-//						password);
-//				mSignInTask.execute(emailId);
-//			} else {
-//				dismissDialog(0);
-//				Log.v("SPLASH_SCREEN", "You are not online!!!!");
-//				// showLoading(false, "", "");
-//				warningDialogBox("Please check you internet connection!!");
-//			}
+		public void validateUserName(final String userName) {
+			showDialog(0);
+			if (mAppStatus.isOnline(LoginInActivity.this)) {
+				
+				LoginTask mLoginTask = new LoginTask(LoginInActivity.this,userName);
+				mLoginTask.execute(userName);
+				
+			} else {
+				dismissDialog(0);
+				Log.v("SPLASH_SCREEN", "You are not online!!!!");
+				// showLoading(false, "", "");
+				warningDialogBox("Please check you internet connection!!");
+			}
 		
 		}
 		
@@ -123,8 +128,7 @@ public class LoginInActivity extends Activity {
 			// TODO Auto-generated method stub
 
 			// prepare the alert box
-			AlertDialog.Builder alertbox = new AlertDialog.Builder(
-					LoginInActivity.this);
+			AlertDialog.Builder alertbox = new AlertDialog.Builder(this);
 
 			// set the message to display
 			alertbox.setMessage(warningText);
@@ -150,8 +154,9 @@ public class LoginInActivity extends Activity {
 					.setPositiveButton("Yes",
 							new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface dialog, int id) {
-									
+
 									dialog.dismiss();
+									//moveTaskToBack(true);
 									finish();
 									return;
 								}
@@ -164,6 +169,7 @@ public class LoginInActivity extends Activity {
 			AlertDialog alert = builder.create();
 			alert.show();
 		}
+	
 		
 		/*-----------onCreateDialog method START ------ */
 		// Shows progress dialog box
@@ -209,19 +215,13 @@ public class LoginInActivity extends Activity {
 		@Override
 		public boolean onKeyDown(int keyCode, KeyEvent event) {
 
-			//boolean isBackBtnPressed = false;
 			if (keyCode == KeyEvent.KEYCODE_BACK) {
-				//isBackBtnPressed = true;
 				Log.i("Backup Button", "Pressed");
 				warningDialogBox();
-				
-				// return true;
 				
 			}
 
 			return super.onKeyDown(keyCode, event);
-		}
-
-		
+		}	
 		
 }

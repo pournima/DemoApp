@@ -1,6 +1,5 @@
 package com.github;
 
-
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -9,11 +8,9 @@ import android.os.Handler;
 import android.util.Log;
 import android.widget.SlidingDrawer;
 import android.widget.Toast;
-
 import com.github.helper.AppStatus;
-import com.github.repository.RepositoryActivity;
-
-
+import com.github.helper.Constants;
+import com.github.repository.GroupRepositoryActivity;
 
 public class SplashScreen extends Activity {
 	AppStatus mAppStatus;
@@ -27,19 +24,13 @@ public class SplashScreen extends Activity {
 		mAppStatus = AppStatus.getInstance(this);
 		mhandler = new Handler();
 		loading = new ProgressDialog(this);
-
+		
 		startApp();
 	}
 
 	private void startApp() {
 		// TODO Auto-generated method stub
-		// try {
-		// this.wait(1000);
-		// } catch (InterruptedException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
-		
+
 
 		Thread t = new Thread(new Runnable() {
 			@Override
@@ -49,15 +40,22 @@ public class SplashScreen extends Activity {
 					Log.v("SPLASH_SCREEN", "App is online");
 					if (mAppStatus.isRegistered()) {
 						Log.v("SPLASH_SCREEN", "App is registered!");
-						Intent i = new Intent(SplashScreen.this,
-								RepositoryActivity.class);
+						
+						// Get user name from shared preferences
+						
+						String loginUserName=mAppStatus.getSharedUserName(Constants.LOGIN_USERNAME);
+						Log.d("Login UserName  ########", loginUserName);
+						/////////////////////////////////////
+						Constants.gitflag=false;
+						
+						Intent i = new Intent(SplashScreen.this,GroupRepositoryActivity.class);
+						i.putExtra("username", loginUserName);
 						i.putExtra("LOGIN_FLAG", false);
 						startActivity(i);
 						finish();
 					} else {
 						Log.v("SPLASH_SCREEN", "You are not registered!!!!");
-						Intent intent_login = new Intent(SplashScreen.this,
-								LoginInActivity.class);
+						Intent intent_login = new Intent(SplashScreen.this,LoginInActivity.class);
 						startActivity(intent_login);
 						finish();
 					}

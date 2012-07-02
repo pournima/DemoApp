@@ -13,7 +13,6 @@ import android.util.Log;
 public class RepositoryDBAdapter extends DbAdapter {
 
 	public static final String ROWID = "_id";
-	public static final String ID = "id";
 	public static final String NAME = "name";
 	public String strTableName;
 
@@ -34,7 +33,7 @@ public class RepositoryDBAdapter extends DbAdapter {
 	@Override
 	protected void setDbColumns() {
 		// TODO Auto-generated method stub
-		this.dbColumns = new String[] { ROWID, ID, NAME };
+		this.dbColumns = new String[] { ROWID,NAME };
 		Log.i("Db Comolmn Set", dbColumns.toString());
 	}
 
@@ -50,24 +49,23 @@ public class RepositoryDBAdapter extends DbAdapter {
 
 	ContentValues createContentValues(RepositoryDataModel repository) {
         ContentValues values = new ContentValues();
-        values.put("id", repository.getId());
         values.put("name", repository.getName());
     	
         return values;
 	}
 	public ArrayList<RepositoryDataModel> getRepositoryList(Context context) {
-		Cursor categoriesCursor = this.fetchAll(null, null);
-		ArrayList<RepositoryDataModel> categoriesList = new ArrayList<RepositoryDataModel>();
+		Cursor repositoryCursor = this.fetchAll(null, null);
+		ArrayList<RepositoryDataModel> repositoryList = new ArrayList<RepositoryDataModel>();
 
-		while (categoriesCursor.moveToNext()) {
+		while (repositoryCursor.moveToNext()) {
 			RepositoryDataModel repository_data = new RepositoryDataModel(
-					categoriesCursor);
+					repositoryCursor);
 
-			categoriesList.add(repository_data);
+			repositoryList.add(repository_data);
 
 		}
-		categoriesCursor.close();
-		return categoriesList;
+		repositoryCursor.close();
+		return repositoryList;
 	}
 
 	
