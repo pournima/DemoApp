@@ -24,7 +24,7 @@ import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.Toast;
 
-public class CommitsActivity extends GroupActivity {
+public class CommitsActivity extends Activity {
 	
 	public ProgressDialog mProgressDialog;
 	private ProgressDialog loading;
@@ -67,18 +67,11 @@ public class CommitsActivity extends GroupActivity {
 		mCommitsDataModel = new CommitsDataModel();
 
 		try {
-			
-			if(Constants.flagCommit){
-				userName=getIntent().getExtras().getString("username");
-			}else{
-				owner=getIntent().getExtras().getString("owner");
-				userName=owner;
-			}
+	
 			//getting all commits Data from API into response
-			
+			userName=getIntent().getExtras().getString("username");
 			branchName=getIntent().getExtras().getString("branchname");
 			repoName=getIntent().getExtras().getString("reponame");
-			
 			
 			//String pageNumber = new Integer(PageNo).toString();
 			if (mAppStatus.isOnline(CommitsActivity.this)) {	
@@ -105,12 +98,6 @@ public class CommitsActivity extends GroupActivity {
 
 		Log.i("commits Response --- ", String.valueOf(strJsonResponse));
 
-		if(strJsonResponse.equals("[]")){
-			Log.i("Responce", "Is Empty []");
-		}
-		else{
-			
-			
 			CommitsParserResult commitsParse=new CommitsParserResult();
 			ArrayList<CommitsDataModel> commitDataModel=commitsParse.parseCommitsData(strJsonResponse);
 			
@@ -126,7 +113,7 @@ public class CommitsActivity extends GroupActivity {
 			}
 			dismissDialog(0);
 			generateList();
-		}	
+	
 	}
 	
 	private void generateList(){
@@ -190,34 +177,5 @@ public class CommitsActivity extends GroupActivity {
 		mProgressDialog = dialog;
 		return dialog;
 	}
-	
-	
-//	@Override
-//	public boolean onCreateOptionsMenu(Menu menu) {
-//		MenuInflater inflater = getMenuInflater();
-//		inflater.inflate(R.menu.menu, menu);
-//		return true;
-//
-//	}
-//
-//	@Override
-//	public boolean onOptionsItemSelected(MenuItem item) {
-//		 if(item.getItemId()==R.id.menuLogOut){
-//			//***LogOut
-//			
-//			AppStatus mAppStatus=new AppStatus();
-//			mAppStatus.clearAuthKey(Constants.AUTH_KEY);
-//			
-//			Intent intent=new Intent(getApplicationContext(),LoginInActivity.class);
-//			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//			intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-//			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-//			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);			
-//			startActivity(intent);
-//			finish();	
-//		
-//		}
-//		return true;
-//	}
 	
 }

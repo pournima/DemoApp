@@ -176,20 +176,20 @@ public class GroupActivity extends ActivityGroup {
 					
 					Intent intent=new Intent(GroupActivity.this,LoginInActivity.class);
 					startActivity(intent);
-					finish();
+					this.finish();
 					
 				}else if(item.getItemId()==R.id.menuOrganisation){
 										
 					Intent intent=new Intent(GroupActivity.this,GroupOrganisationRepositoryActivity.class);
 					startActivity(intent);
 					//startChildActivity("organisation", intent);
-					finish();
+					this.finish();
 				}
 				else if(item.getItemId()==R.id.menuUser){
 					
 					Intent intent=new Intent(GroupActivity.this,GroupRepositoryActivity.class);
 					startActivity(intent);
-					finish();
+					this.finish();
 				}
 			return true;
 

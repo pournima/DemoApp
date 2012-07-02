@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="#FFFFFF">
-    
+  
    <TextView
         android:id="@+id/textViewCommit"
         android:layout_width="wrap_content"
@@ -14,13 +14,15 @@
         android:textSize="20dp"
         android:textStyle="bold"
         android:textColor="#43BFC7"
-        android:layout_gravity="center"/>
-
+        android:layout_gravity="center"
+        /> 
+   
 	<ListView 
 	    android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
 		android:cacheColorHint="@color/transparent"
 		android:id="@+id/listViewCommit">	    
-		<!-- android:background="@drawable/github_backscreen"  -->
+		<!-- android:background="@drawable/github_backscreen"  #FFFFFF #43BFC7   #3BB9FF-->
 	</ListView>
+
 </LinearLayout>

@@ -23,7 +23,7 @@
 		android:cacheColorHint="@color/transparent"
 		android:id="@+id/listView"
 		 >	    
-		<!-- android:background="@drawable/github_backscreen" -->
+		<!-- android:background="@drawable/github_backscreen" #43BFC7  #3BB9FF -->
 	</ListView>
 	
 </LinearLayout>

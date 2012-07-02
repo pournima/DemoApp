@@ -139,7 +139,7 @@ public class BranchActivity extends Activity {
 					Log.d("branch name---", "" + branchName);
 				
 					//String pageNumber = new Integer(PageNo).toString();
-					Constants.flagCommit=true;
+					
 					Intent intent = new Intent(getParent(),CommitsActivity.class);
 					
 					intent.putExtra("username", userName);
@@ -148,7 +148,8 @@ public class BranchActivity extends Activity {
 					//startActivity(intent);
 					
 					GroupActivity parentActivity = (GroupActivity)getParent();
-					parentActivity.startChildActivity("branch intent", intent);
+					parentActivity.startChildActivity("commit intent", intent);
+
 					
 					
 				} else {
@@ -189,7 +190,6 @@ public class BranchActivity extends Activity {
 		});
 	}
 	
-	
 	// Shows progress dialog box
 	@Override
 	protected Dialog onCreateDialog(int id) {
@@ -209,35 +209,4 @@ public class BranchActivity extends Activity {
 		return dialog;
 	}
 	
-//	@Override
-//	public boolean onCreateOptionsMenu(Menu menu) {
-//		MenuInflater inflater = getMenuInflater();
-//		inflater.inflate(R.menu.menu, menu);
-//		return true;
-//
-//	}
-//
-//	@Override
-//	public boolean onOptionsItemSelected(MenuItem item) {
-//		 if(item.getItemId()==R.id.menuLogOut){
-//			//***LogOut
-//			
-//			AppStatus mAppStatus=new AppStatus();
-//			mAppStatus.clearAuthKey(Constants.AUTH_KEY);
-//			
-//
-//			Intent intent=new Intent(getApplicationContext(),LoginInActivity.class);
-//			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//			intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-//			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-//			//intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);			
-//			
-//			startActivity(intent);
-//			finish();
-//			
-//		
-//		}
-//		return true;
-//	}
-
 }

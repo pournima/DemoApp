@@ -58,10 +58,14 @@ public final class R {
         public static final int github_image=0x7f020005;
         public static final int githuboctocat=0x7f020006;
         public static final int ic_launcher=0x7f020007;
-        public static final int log_out=0x7f020008;
-        public static final int nextarrow=0x7f020009;
-        public static final int organisation=0x7f02000a;
-        public static final int user=0x7f02000b;
+        public static final int image1=0x7f020008;
+        public static final int image2=0x7f020009;
+        public static final int image3=0x7f02000a;
+        public static final int log_out=0x7f02000b;
+        public static final int nextarrow=0x7f02000c;
+        public static final int organisation=0x7f02000d;
+        public static final int search=0x7f02000e;
+        public static final int user=0x7f02000f;
     }
     public static final class id {
         public static final int Date=0x7f070004;
@@ -107,13 +111,14 @@ public final class R {
     public static final class string {
         public static final int Branch=0x7f05000a;
         public static final int Commit=0x7f05000b;
-        public static final int Date=0x7f05000d;
+        public static final int Date=0x7f05000e;
         public static final int Login=0x7f050004;
-        public static final int Message=0x7f05000e;
-        public static final int Name=0x7f05000c;
+        public static final int Message=0x7f05000f;
+        public static final int Name=0x7f05000d;
         public static final int Organisation=0x7f050008;
         public static final int Password=0x7f050003;
         public static final int Repository=0x7f050009;
+        public static final int SearchCommitByUser=0x7f05000c;
         public static final int UserName=0x7f050002;
         public static final int app_name=0x7f050001;
         public static final int hello=0x7f050000;

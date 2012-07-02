@@ -21,7 +21,7 @@
 		android:layout_height="wrap_content"
 		android:cacheColorHint="@color/transparent"
 		android:id="@+id/listViewBranch">	    
-		<!--android:background="@drawable/github_backscreen"  -->
+		<!--android:background="@drawable/github_backscreen"  #FFFFFF     #43BFC7 #3BB9FF-->
 	</ListView>
 
 </LinearLayout>

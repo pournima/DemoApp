@@ -15,8 +15,9 @@
 	<string name="Branch">Branch</string>
 	<string name="Commit">Commits</string>
 	
+	<string name="SearchCommitByUser">Search by User </string>
 	
-	<string name="Name">Commiter Name:</string>
+	<string name="Name">Name:</string>
 	<string name="Date">Date :</string>
 	<string name="Message">Message :</string>
 </resources>

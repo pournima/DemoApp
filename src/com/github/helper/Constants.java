@@ -8,7 +8,7 @@ public class Constants {
 	
 	
 	//URL
-	public static final String BRANCH="sha";
+	public static final String BRANCH="branch";
 	public static final String strLoginUserName="/users/auth_token.json";
 	public static final String strRepository="/users/repository.json";
 	public static final String strBranch="/users/branch.json";

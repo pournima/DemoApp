@@ -137,8 +137,8 @@ public class OrganisationBranchActivity extends Activity {
 					Log.d("branch name---", "" + branchName);
 				
 					//String pageNumber = new Integer(PageNo).toString();
-					Constants.flagCommit=false;
-					Intent intent = new Intent(getParent(),CommitsActivity.class);
+					
+					Intent intent = new Intent(getParent(),OrganisationCommitActivity.class);
 					
 					intent.putExtra("owner", owner);
 					intent.putExtra("reponame", repoName);
@@ -146,7 +146,7 @@ public class OrganisationBranchActivity extends Activity {
 					//startActivity(intent);
 					
 					GroupActivity parentActivity = (GroupActivity)getParent();
-					parentActivity.startChildActivity("branch intent", intent);
+					parentActivity.startChildActivity("orgCommits intent", intent);
 					
 					
 				} else {

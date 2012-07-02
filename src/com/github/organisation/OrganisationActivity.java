@@ -109,7 +109,7 @@ public class OrganisationActivity extends Activity {
 		i.putExtra("strJsonResponse", strJsonResponse);
 		//startActivity(i);
 		GroupActivity parentActivity = (GroupActivity)getParent();
-		parentActivity.startChildActivity("branch intent", i);
+		parentActivity.startChildActivity("orgBranch intent", i);
 	}
 	
 	private void generateList(){
