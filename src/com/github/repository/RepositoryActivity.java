@@ -21,6 +21,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -51,6 +52,9 @@ public class RepositoryActivity extends Activity {
 			setContentView(R.layout.repository_layout);
 					
 			mAppStatus = AppStatus.getInstance(this);
+			Button btnOrgMember;
+			btnOrgMember=(Button) findViewById(R.id.buttonMember);
+			btnOrgMember.setVisibility(View.INVISIBLE);
 			
 			userName=mAppStatus.getSharedUserName(Constants.LOGIN_USERNAME);
 			//userName=getIntent().getExtras().getString("username");

@@ -9,6 +9,8 @@ import com.github.branch.BranchActivity;
 import com.github.helper.AppStatus;
 import com.github.helper.CommitsParserResult;
 import com.github.helper.Constants;
+import com.github.organisation.OrganisationSearchCommitActivity;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -21,6 +23,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -34,6 +39,8 @@ public class CommitsActivity extends Activity {
 	String owner;
 	String branchName;
 	String repoName;
+	String Response;
+	Button btnSearch;
 	
 	Boolean flag=true;
 	AppStatus mAppStatus;
@@ -55,6 +62,25 @@ public class CommitsActivity extends Activity {
 			getCommitData();
 			//generateList();
 
+			btnSearch=(Button) findViewById(R.id.buttonSearch);
+			
+			btnSearch.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+				Intent i=new Intent(getParent(), OrganisationSearchCommitActivity.class);
+				i.putExtra("response", Response);
+				i.putExtra("owner", owner);
+				i.putExtra("reponame", repoName);
+				i.putExtra("branchname",branchName);
+				
+				GroupActivity parentActivity = (GroupActivity)getParent();
+				parentActivity.startChildActivity("orgSearchCommit intent", i);
+
+				}
+			});
+			
 		}
 		
 		
@@ -68,6 +94,7 @@ public class CommitsActivity extends Activity {
 
 		try {
 	
+			
 			//getting all commits Data from API into response
 			userName=getIntent().getExtras().getString("username");
 			branchName=getIntent().getExtras().getString("branchname");
@@ -97,7 +124,9 @@ public class CommitsActivity extends Activity {
 	public void commitsResponce(String strJsonResponse){
 
 		Log.i("commits Response --- ", String.valueOf(strJsonResponse));
-
+		
+		Response=strJsonResponse;
+		
 			CommitsParserResult commitsParse=new CommitsParserResult();
 			ArrayList<CommitsDataModel> commitDataModel=commitsParse.parseCommitsData(strJsonResponse);
 			

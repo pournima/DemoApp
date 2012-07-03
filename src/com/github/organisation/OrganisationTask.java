@@ -9,6 +9,8 @@ import org.apache.http.message.BasicNameValuePair;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.util.Log;
+import android.widget.Toast;
+
 import com.github.helper.AppStatus;
 import com.github.helper.Constants;
 import com.github.rest.RestClient;
@@ -67,10 +69,10 @@ public class OrganisationTask extends AsyncTask<String, Void, String> {
 		
 		Log.i("STRJSON RESPONSE::::", String.valueOf(strJsonReponse));
 
-		if (strJsonReponse == null) {
+		if (strJsonReponse.equals("[]")) {
 			
 			Log.i("JSON RESPONSE::::","Data not found...!!");
-			
+			Toast.makeText(context,"No organisation for this user",Toast.LENGTH_SHORT).show();
 
 		} else {
 			/* RepositoryActivity' activity */

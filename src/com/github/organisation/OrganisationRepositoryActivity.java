@@ -8,6 +8,8 @@ import com.github.branch.BranchActivity;
 import com.github.helper.AppStatus;
 import com.github.helper.Constants;
 import com.github.helper.OrganisationRepositoryParseResult;
+import com.github.members.OrganisationMemberActivity;
+import com.github.members.OrganisationMemberTask;
 import com.github.repository.RepositoryActivity;
 import com.github.repository.RepositoryListAdapter;
 import android.app.Activity;
@@ -22,7 +24,9 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -31,13 +35,13 @@ public class OrganisationRepositoryActivity extends Activity {
 	public ProgressDialog mProgressDialog;
 	private ProgressDialog loading;
 	Handler mhandler;
-
 	
 	String organisationRepo;
 	String orgRepositoryName;
 	String userName;
 	
 	ListView listView;
+	Button btnMember;
 	
 	AppStatus mAppStatus;
 	OrganisationRepositoryDBAdapter mRepositoryDBAdapter;
@@ -45,7 +49,9 @@ public class OrganisationRepositoryActivity extends Activity {
 	
 	ArrayList<OrganisationRepositoryDataModel> orgRepositoryData;
 	OrganisationRepositoryListAdapter mRepositoryListAdapter;
-
+	
+	String strJsonResponse;
+	String strOrganisation;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -55,12 +61,40 @@ public class OrganisationRepositoryActivity extends Activity {
 		mAppStatus = AppStatus.getInstance(this);
 		userName=mAppStatus.getSharedUserName(Constants.LOGIN_USERNAME);
 		
-		String strJsonResponse=getIntent().getExtras().getString("strJsonResponse");
+		strJsonResponse=getIntent().getExtras().getString("strJsonResponse");
+		strOrganisation=getIntent().getExtras().getString("organisation");
+		
 		Log.d("repo response", strJsonResponse);
 		getOrganisationRepository(strJsonResponse);
+		
+		onMemberButtonClick();
+		
 	}
 	
 	
+	private void onMemberButtonClick(){
+		btnMember=(Button) findViewById(R.id.buttonMember);
+		
+		
+		btnMember.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				
+				Intent i=new Intent(getParent(), OrganisationMemberActivity.class);
+
+				i.putExtra("organisation", strOrganisation);
+				
+				GroupActivity parentActivity = (GroupActivity)getParent();
+				parentActivity.startChildActivity("orgMember intent", i);
+				
+			}
+		});
+		
+	}
+	
+
 	private void getOrganisationRepository(String strJsonResponse) {
 		
 		mRepositoryDBAdapter = new OrganisationRepositoryDBAdapter(this,
@@ -118,7 +152,6 @@ public class OrganisationRepositoryActivity extends Activity {
 					
 					i.putExtra("owner", repoOwner);
 					i.putExtra("reponame", orgRepositoryName);
-					//startActivity(intent);
 					
 					GroupActivity parentActivity = (GroupActivity)getParent();
 					parentActivity.startChildActivity("branch intent", i);

@@ -1,29 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" 
     android:background="#FFFFFF">
+ 
+ 
+ -->
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#FFFFFF"
+    android:orientation="vertical" >
     
-
+     <TextView
+         android:id="@+id/header"
+        android:layout_width="fill_parent"
+        android:layout_height="55dp"
+        android:background="@drawable/image1"        
+         />
+   
    <TextView
         android:id="@+id/textViewRepository"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="10dp"
+        android:padding="15dp"
         android:text="@string/Repository"
         android:textSize="20dp"
         android:textStyle="bold"
-        android:textColor="#43BFC7"
+        android:textColor="#FFFFFF"
         android:layout_gravity="center"/>
 
+ <Button
+	    android:id="@+id/buttonMember"
+	    android:layout_width="40dp"
+	    android:layout_height="35dp"
+	    android:layout_marginTop="7dp"
+	    android:layout_marginRight="15dp"
+	    android:layout_alignParentRight="true"
+	    android:layout_alignParentTop="true"
+	    android:background="@drawable/organisation"
+	 />
+       
 	<ListView 
 	    android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
 		android:cacheColorHint="@color/transparent"
 		android:id="@+id/listView"
-		 >	    
+		android:layout_below="@+id/header"
+		/>	    
 		<!-- android:background="@drawable/github_backscreen" #43BFC7  #3BB9FF -->
-	</ListView>
 	
-</LinearLayout>
+</RelativeLayout>

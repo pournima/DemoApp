@@ -7,11 +7,8 @@ import com.github.R;
 import com.github.helper.AppStatus;
 import com.github.helper.Constants;
 import com.github.helper.OrganisationParserResult;
-import com.github.helper.RepositoryParserResult;
-import com.github.repository.RepositoryActivity;
-import com.github.repository.RepositoryDataModel;
-
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
@@ -20,6 +17,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -27,7 +25,7 @@ import android.widget.ListView;
 public class OrganisationActivity extends Activity {
 	
 	ListView listView;
-	
+		
 	Handler mhandler;
 	AppStatus mAppStatus;
 	OrganisationDBAdapter mOrganisationDBAdapter;
@@ -49,8 +47,9 @@ public class OrganisationActivity extends Activity {
 		mAppStatus = AppStatus.getInstance(this);
 		
 		getOrganisationData();
+		
 	}
-	
+
 	
 	private void getOrganisationData(){
 
@@ -102,14 +101,15 @@ public class OrganisationActivity extends Activity {
 			
 	}
 	
-	public void organisationRepositoryResponse(String strJsonResponse){
+	public void organisationRepositoryResponse(String strJsonResponse,String organisation){
 		Log.i("organisation Repository Response --- ", String.valueOf(strJsonResponse));
 
 		Intent i=new Intent(getParent(), OrganisationRepositoryActivity.class);
 		i.putExtra("strJsonResponse", strJsonResponse);
+		i.putExtra("organisation", organisation);
 		//startActivity(i);
 		GroupActivity parentActivity = (GroupActivity)getParent();
-		parentActivity.startChildActivity("orgBranch intent", i);
+		parentActivity.startChildActivity("orgbranches intent", i);
 	}
 	
 	private void generateList(){
@@ -137,7 +137,7 @@ public class OrganisationActivity extends Activity {
 					Log.d("Organisation name---", "" + orgName);
 					
 					showDialog(0);
-					OrganisationRepositoryTask mOrganisationRepositoryTask = new OrganisationRepositoryTask(OrganisationActivity.this);
+					OrganisationRepositoryTask mOrganisationRepositoryTask = new OrganisationRepositoryTask(OrganisationActivity.this,orgName);
 					mOrganisationRepositoryTask.execute(orgName);
 					
 
@@ -173,6 +173,39 @@ public class OrganisationActivity extends Activity {
 		return dialog;
 	}
 	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			Log.i("Backup Button", "Pressed");
+			warningDialogBox();
+			
+		}
+
+		return super.onKeyDown(keyCode, event);
+	}
 	
+	private void warningDialogBox() {
+		Log.i("Warning......Dialog", "ssssss");
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage("Are you sure you want to exit?")
+				.setCancelable(false)
+				.setPositiveButton("Yes",
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int id) {
+								
+								dialog.dismiss();
+								finish();
+								return;
+							}
+						})
+				.setNegativeButton("No", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						dialog.cancel();
+					}
+				});
+		AlertDialog alert = builder.create();
+		alert.show();
+	}
 	
 }

@@ -90,7 +90,7 @@ public class CommitsTask extends AsyncTask<String, Void, String> {
 		
 		Log.i("STRJSON RESPONSE::::", String.valueOf(strJsonReponse));
 
-		if (strJsonReponse == null) {
+		if (strJsonReponse.equals("[]")) {
 			
 			context.dismissDialog(0);
 			

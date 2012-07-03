@@ -10,12 +10,17 @@
 	<string name="menuOrganisation">Organisation</string>
 	<string name="menuUser">User</string>
 	
+	<string name="OrganisationMember">Organisation Member</string>
 	<string name="Organisation">Organisation</string>
 	<string name="Repository">Repository</string>
 	<string name="Branch">Branch</string>
 	<string name="Commit">Commits</string>
 	
 	<string name="SearchCommitByUser">Search by User </string>
+	<string name="SelectUser">User</string>
+	<string name="DatePicker">Date Picker</string>
+	<string name="Ok">OK</string>
+	
 	
 	<string name="Name">Name:</string>
 	<string name="Date">Date :</string>

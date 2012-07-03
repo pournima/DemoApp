@@ -1,6 +1,8 @@
 package com.github.organisation;
 
 import java.util.ArrayList;
+
+import com.github.GroupActivity;
 import com.github.R;
 import com.github.commits.CommitListAdapter;
 import com.github.commits.CommitsDBAdapter;
@@ -8,14 +10,20 @@ import com.github.commits.CommitsDataModel;
 import com.github.helper.AppStatus;
 import com.github.helper.CommitsParserResult;
 import com.github.helper.Constants;
+import com.github.helper.OrganisationUserCommitsParseResult;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -29,6 +37,8 @@ public class OrganisationCommitActivity extends Activity {
 	String owner;
 	String branchName;
 	String repoName;
+	String committer_name;
+	String date;
 	
 	Boolean flag=true;
 	AppStatus mAppStatus;
@@ -38,6 +48,9 @@ public class OrganisationCommitActivity extends Activity {
 	String PageNo;
 	ArrayList<CommitsDataModel> commitsData;
 	CommitListAdapter mCommitListAdapter;
+	
+	String Response;
+	Button btnSearch;
 	
 		@Override
 		public void onCreate(Bundle savedInstanceState) {
@@ -49,8 +62,28 @@ public class OrganisationCommitActivity extends Activity {
 			
 			getCommitData();
 			//generateList();
+		
+			btnSearch=(Button) findViewById(R.id.buttonSearch);
+			
+			btnSearch.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+				Intent i=new Intent(getParent(), OrganisationSearchCommitActivity.class);
+				i.putExtra("response", Response);
+				i.putExtra("owner", owner);
+				i.putExtra("reponame", repoName);
+				i.putExtra("branchname",branchName);
+				
+				GroupActivity parentActivity = (GroupActivity)getParent();
+				parentActivity.startChildActivity("orgSearchCommit intent", i);
 
+				}
+			});
+			
 		}
+		
 		
 		
 	private void getCommitData(){
@@ -62,25 +95,25 @@ public class OrganisationCommitActivity extends Activity {
 		mCommitsDataModel = new CommitsDataModel();
 
 		try {
-
-			//getting all commits Data from API into response
-			owner=getIntent().getExtras().getString("owner");
-			branchName=getIntent().getExtras().getString("branchname");
-			repoName=getIntent().getExtras().getString("reponame");
 			
+				//getting all commits Data from API into response
+				owner=getIntent().getExtras().getString("owner");
+				branchName=getIntent().getExtras().getString("branchname");
+				repoName=getIntent().getExtras().getString("reponame");
+				
+				
+				//String pageNumber = new Integer(PageNo).toString();
+				if (mAppStatus.isOnline(OrganisationCommitActivity.this)) {	
+					showDialog(0);				
+					
+					mCommitsDBAdapter.deleteAll();	
+					OrganisationCommitTask mCommitsTask = new OrganisationCommitTask(this, branchName,owner,repoName);
+					mCommitsTask.execute(branchName);
+					
+				}else{
+					generateList();
+				}
 			
-			//String pageNumber = new Integer(PageNo).toString();
-			if (mAppStatus.isOnline(OrganisationCommitActivity.this)) {	
-				showDialog(0);				
-				
-				mCommitsDBAdapter.deleteAll();	
-				OrganisationCommitTask mCommitsTask = new OrganisationCommitTask(this, branchName,owner,repoName);
-				mCommitsTask.execute(branchName);
-				
-			}else{
-				generateList();
-			}
-
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -97,7 +130,8 @@ public class OrganisationCommitActivity extends Activity {
 			Log.i("Responce", "Is Empty []");
 		}
 		else{
-			
+
+			Response=strJsonResponse;
 			
 			CommitsParserResult commitsParse=new CommitsParserResult();
 			ArrayList<CommitsDataModel> commitDataModel=commitsParse.parseCommitsData(strJsonResponse);
@@ -127,6 +161,8 @@ public class OrganisationCommitActivity extends Activity {
 		listView.setAdapter(mCommitListAdapter);
 	
 	}
+	
+
 	
 	
 	void showLoading(final boolean show, final String title, final String msg) {

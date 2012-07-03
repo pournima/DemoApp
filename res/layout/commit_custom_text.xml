@@ -8,15 +8,18 @@
         android:id="@+id/Name"  
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="15sp"
+        android:textSize="16sp"
+        android:textColor="#488AC7"
+        android:paddingTop="5dp"
         android:text="@string/Name"
         /> 
 	
 	<TextView 
-	    android:layout_width="160dp"
+	    android:layout_width="140dp"
 	    android:layout_height="wrap_content"
-	    android:textSize="15sp"
+	    android:textSize="16sp"
 	    android:id="@+id/textName"
+	    android:paddingTop="5dp"
 	    android:textColor="#000000"
 	    android:layout_toRightOf="@id/Name"
 	    >
@@ -28,6 +31,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="15sp"
+        android:textColor="#488AC7"
+        android:paddingTop="5dp"
         android:text="@string/Date"
         android:layout_toRightOf="@id/textName"
         />      
@@ -37,6 +42,7 @@
 	    android:layout_height="wrap_content"
 	    android:textSize="15sp"
 	    android:id="@+id/textDate"
+	    android:paddingTop="5dp"
 	    android:textColor="#000000"
 	    android:layout_toRightOf="@+id/Date">
 	</TextView>
@@ -46,7 +52,9 @@
         android:id="@+id/Message"  
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="15sp"
+        android:textSize="16sp"
+        android:textColor="#488AC7"
+        android:paddingTop="12dp"
         android:text="@string/Message"
         android:layout_below="@+id/Date"
         /> 
@@ -54,9 +62,10 @@
 	<TextView 
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
-	    android:textSize="15sp"
+	    android:textSize="16sp"
 	    android:id="@+id/textMessage"
 	    android:textColor="#000000"
+	    android:paddingTop="12dp"
 	    android:layout_below="@+id/textDate"
 	    android:layout_toRightOf="@+id/Message">
 	</TextView>	

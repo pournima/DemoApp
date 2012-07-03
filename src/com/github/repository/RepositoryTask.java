@@ -14,6 +14,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.util.Log;
+import android.widget.Toast;
 
 
 public class RepositoryTask extends AsyncTask<String, Void, String> {
@@ -85,10 +86,10 @@ public class RepositoryTask extends AsyncTask<String, Void, String> {
 		
 		Log.i("STRJSON RESPONSE::::", String.valueOf(strJsonReponse));
 
-		if (strJsonReponse == null) {
+		if (strJsonReponse.equals("[]")) {
 			
 			Log.i("JSON RESPONSE::::","Data not found...!!");
-			
+			Toast.makeText(context,"No repository",Toast.LENGTH_SHORT).show();
 
 		} else {
 			/* RepositoryActivity' activity */

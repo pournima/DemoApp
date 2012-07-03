@@ -3,12 +3,12 @@
 
 <item android:id="@+id/menuUser"
 android:title="@string/menuUser"
-android:icon="@drawable/user"/>    
+android:icon="@drawable/user1"/>    
 
 <item android:id="@+id/menuOrganisation"
 android:title="@string/menuOrganisation"
 android:icon="@drawable/organisation"/>
-    
+
 <item android:id="@+id/menuLogOut"
 android:title="@string/menuLogOut"
 android:icon="@drawable/log_out"/>

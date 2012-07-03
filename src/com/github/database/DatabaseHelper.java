@@ -54,7 +54,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			Log.v("GitHub", "Creating Organisation Repository: " + createSql);
 			db.execSQL(createSql);
 			
+			createSql=null;
+			createSql = "CREATE TABLE Members (_id INTEGER PRIMARY KEY AUTOINCREMENT, "
+					+ "name TEXT);";
 			
+			Log.v("GitHub", "Creating Members: " + createSql);
+			db.execSQL(createSql);
 			
 			
 			
