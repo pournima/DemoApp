@@ -13,6 +13,7 @@ import com.github.repository.RepositoryDBAdapter;
 import com.github.repository.RepositoryDataModel;
 import com.github.repository.RepositoryListAdapter;
 
+import android.R.string;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -36,7 +37,8 @@ public class OrganisationMemberActivity extends Activity {
 	ListView listView;
 	AppStatus mAppStatus;
 	String strMember;
-
+	String strMemberResponse;
+	
 	ArrayList<RepositoryDataModel> memberData;
 	RepositoryDBAdapter mRepositoryDBAdapter;
 	RepositoryDataModel mRepositoryDataModel;
@@ -52,21 +54,25 @@ public class OrganisationMemberActivity extends Activity {
 		
 		organisation=getIntent().getExtras().getString("organisation");
 		getMembers(organisation);
-
+		
 	}
 	
 	private void getMembers(String strOrganisation){
 		
-		showDialog(0);
-		if (mAppStatus.isOnline(OrganisationMemberActivity.this)) {	
-			OrganisationMemberTask orgMemberTask=new OrganisationMemberTask(OrganisationMemberActivity.this,strOrganisation);
-			orgMemberTask.execute(strOrganisation);
-		
-		}
+//		showDialog(0);
+//		if (mAppStatus.isOnline(OrganisationMemberActivity.this)) {	
+//			OrganisationMemberTask orgMemberTask=new OrganisationMemberTask(OrganisationMemberActivity.this,strOrganisation);
+//			orgMemberTask.execute(strOrganisation);
+//		
+//		}
+		strMemberResponse=getIntent().getExtras().getString("memberResponse");
 		mRepositoryDBAdapter = new RepositoryDBAdapter(this,
 				Constants.MembersTableName);
 		mRepositoryDataModel = new RepositoryDataModel();
 		mRepositoryDBAdapter.deleteAll();
+		
+		memberResponse(strMemberResponse);
+		
 	}
 	
 	
@@ -110,12 +116,7 @@ public class OrganisationMemberActivity extends Activity {
 					strMember = (memberData.get(position)).toString();
 					Log.d("Member name---", "" + strMember);
 					
-//					Intent i=new Intent(getParent(), BranchActivity.class);
-//					
-//					i.putExtra("username", userName);
-//					i.putExtra("reponame", repoName);				
-//					GroupActivity parentActivity = (GroupActivity)getParent();
-//					parentActivity.startChildActivity("branch intent", i);
+					
 					
 				} else {
 					// dismissDialog(0);

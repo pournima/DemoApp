@@ -29,7 +29,6 @@ import android.widget.Toast;
 public class OrganisationUserCommitsActivity extends Activity {
 
 	public ProgressDialog mProgressDialog;
-	private ProgressDialog loading;
 	Handler mhandler;
 	
 	String userName;
@@ -38,6 +37,7 @@ public class OrganisationUserCommitsActivity extends Activity {
 	String repoName;
 	String committer_name;
 	String date;
+	String commitResponse;
 	
 	Boolean flag=true;
 	AppStatus mAppStatus;
@@ -56,13 +56,16 @@ public class OrganisationUserCommitsActivity extends Activity {
 			// TODO Auto-generated method stub
 			super.onCreate(savedInstanceState);
 			setContentView(R.layout.commit_layout);
-
-			//tvuser.setText(user);
 			
-			getCommitData();
-			//generateList();
-		
 			btnSearch=(Button) findViewById(R.id.buttonSearch);
+			
+			if(Constants.flagUserCommit){
+				btnSearch.setVisibility(View.INVISIBLE);
+			}
+			else{
+				btnSearch.setVisibility(View.VISIBLE);
+			}
+			getCommitData();
 			
 			btnSearch.setOnClickListener(new OnClickListener() {
 				
@@ -95,22 +98,24 @@ public class OrganisationUserCommitsActivity extends Activity {
 
 		try {
 			//Commit by search
+				commitResponse=getIntent().getExtras().getString("commitResponse");
 				committer_name=getIntent().getExtras().getString("committer_name");
 				date=getIntent().getExtras().getString("date");
 				owner=getIntent().getExtras().getString("owner");
 				branchName=getIntent().getExtras().getString("branchname");
 				repoName=getIntent().getExtras().getString("reponame");
-
-				if (mAppStatus.isOnline(OrganisationUserCommitsActivity.this)) {	
-					showDialog(0);				
-					
-					mCommitsDBAdapter.deleteAll();	
-					OrganisationUserCommitsTask mCommitsTask = new OrganisationUserCommitsTask(this, branchName,owner,repoName,committer_name,date);
-					mCommitsTask.execute(branchName);
-					
-				}else{
-					generateList();
-				}
+				
+				commitsResponce(commitResponse);
+//				showDialog(0);
+//				if (mAppStatus.isOnline(OrganisationUserCommitsActivity.this)) {	
+//					
+//					OrganisationUserCommitsTask mCommitsTask = new OrganisationUserCommitsTask(this, branchName,owner,repoName,committer_name,date);
+//					mCommitsTask.execute(branchName);
+//					
+//				}else{
+//					dismissDialog(0);
+//					generateList();
+//				}
 	
 			
 		} catch (Exception e) {
@@ -119,8 +124,7 @@ public class OrganisationUserCommitsActivity extends Activity {
 		}
 
 	}
-	
-	
+
 	public void commitsResponce(String strJsonResponse){
 
 		Log.i("commits Response --- ", String.valueOf(strJsonResponse));
@@ -129,7 +133,7 @@ public class OrganisationUserCommitsActivity extends Activity {
 			Log.i("Responce", "Is Empty []");
 		}
 		else{
-
+			mCommitsDBAdapter.deleteAll();	
 			Response=strJsonResponse;
 			
 			CommitsParserResult commitsParse=new CommitsParserResult();
@@ -145,7 +149,7 @@ public class OrganisationUserCommitsActivity extends Activity {
 				mCommitsDBAdapter.create(commitsValues);
 			
 			}
-			dismissDialog(0);
+			//dismissDialog(0);
 			generateList();
 		}	
 	}
@@ -160,41 +164,7 @@ public class OrganisationUserCommitsActivity extends Activity {
 		listView.setAdapter(mCommitListAdapter);
 	
 	}
-	
 
-	
-	
-	void showLoading(final boolean show, final String title, final String msg) {
-		mhandler.post(new Runnable() {
-			@Override
-			public void run() {
-				if (show) {
-					if (loading != null) {
-						loading.setTitle(title);
-						loading.setMessage(msg);
-						loading.show();
-					}
-				} else {
-					loading.cancel();
-					loading.dismiss();
-				}
-
-			}
-		});
-	}
-
-	void message(String msg) {
-		final String mesage = msg;
-		mhandler.post(new Runnable() {
-			@Override
-			public void run() {
-				Toast toast = Toast.makeText(OrganisationUserCommitsActivity.this, mesage, 8000);
-				toast.show();
-			}
-		});
-	}
-	
-	
 	// Shows progress dialog box
 	@Override
 	protected Dialog onCreateDialog(int id) {

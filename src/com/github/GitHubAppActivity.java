@@ -76,9 +76,10 @@ public class GitHubAppActivity extends Activity {
 				String name=getIntent().getExtras().getString("username");
 				
 				Constants.gitflag=true;
-				Intent i= new Intent(GitHubAppActivity.this, RepositoryActivity.class);
+				Intent i= new Intent(GitHubAppActivity.this, LoginInActivity.class); //RepositoryActivity
 				i.putExtra("username", name);
 				startActivity(i);				
+				finish();
 				
 			}
 			//super.onKeyDown(keyCode, event)

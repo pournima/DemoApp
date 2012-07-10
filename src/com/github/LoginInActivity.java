@@ -1,10 +1,7 @@
 package com.github;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import com.github.helper.AppStatus;
-import com.github.helper.Constants;
+import com.github.repository.GroupRepositoryActivity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -25,14 +22,11 @@ public class LoginInActivity extends Activity {
 	
 	public ProgressDialog mProgressDialog;
 	AppStatus mAppStatus;
-	private ProgressDialog loading;
 	Handler mhandler;
 	
 	EditText txtUserName;
-	//EditText txtPassword;
 	Button btnLogin;
-	
-	
+		
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -42,7 +36,6 @@ public class LoginInActivity extends Activity {
 		mAppStatus = AppStatus.getInstance(this);
 		
 		txtUserName=(EditText) findViewById(R.id.editTextUserName);
-		//txtPassword=(EditText) findViewById(R.id.editTextPassword);
 		btnLogin=(Button) findViewById(R.id.btnLoginIn);
 			
 		
@@ -69,61 +62,56 @@ public class LoginInActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-
+				
+				
 				String strUserName = txtUserName.getText().toString();
-
-				//String strPassword = txtPassword.getText().toString(); 
-
-
-				/* Email id and Password is empty or not */
-//				if ((strUserName.equals("")) && strPassword.equals("")) {
-//					Log.i("Status Validation: ", "Please Enter username Password");
-//					warningDialogBox("Please Enter User name or Password.!");
-//					return;
-//				}
 				if (strUserName.equals("")) {
 					Log.i("Status Validation: ", "Please Enter username");
 					warningDialogBox("Please Enter username  ..!");
 					return;
 				}
-//				if (strPassword.equals("")) {
-//					Log.i("Status Validation: ", "Please Enter password ");
-//					warningDialogBox("Please Enter password ..!");
-//					return;
-//				}
-				
+				btnLogin.setEnabled(false);
 				strUserName = strUserName.trim();
 				validateUserName(strUserName);
 
-		
-				
-//				String name=txtUserName.getText().toString();
-//				
-//				Intent i=new Intent(LoginInActivity.this, RepositoryActivity.class);
-//				i.putExtra("username",name);
-//				startActivity(i);
 			}
 		});
 	}
 	
 
 		public void validateUserName(final String userName) {
-			showDialog(0);
+			
 			if (mAppStatus.isOnline(LoginInActivity.this)) {
-				
+				showDialog(0);
 				LoginTask mLoginTask = new LoginTask(LoginInActivity.this,userName);
 				mLoginTask.execute(userName);
 				
 			} else {
 				dismissDialog(0);
 				Log.v("SPLASH_SCREEN", "You are not online!!!!");
-				// showLoading(false, "", "");
 				warningDialogBox("Please check you internet connection!!");
 			}
 		
 		}
 		
 	
+//		public void userAuthenticate(String strUserLoginName){
+//
+//			Intent intent = new Intent(LoginInActivity.this, GroupRepositoryActivity.class); 
+//			intent.putExtra("username",strUserLoginName);
+//			startActivity(intent);
+//			finish();
+//			
+//		}
+//		
+//		
+//		public void userNotAuthenticate(String strUserName){
+//			Intent intentWeb = new Intent(LoginInActivity.this, GitHubAppActivity.class);
+//			intentWeb.putExtra("username",strUserName);
+//			startActivity(intentWeb);
+//			finish();
+//		}
+		
 		public void warningDialogBox(String warningText) {
 			// TODO Auto-generated method stub
 
@@ -190,24 +178,6 @@ public class LoginInActivity extends Activity {
 			return dialog;
 		}
 
-		void showLoading(final boolean show, final String title, final String msg) {
-			mhandler.post(new Runnable() {
-				@Override
-				public void run() {
-					if (show) {
-						if (loading != null) {
-							loading.setTitle(title);
-							loading.setMessage(msg);
-							loading.show();
-						}
-					} else {
-						loading.cancel();
-						loading.dismiss();
-					}
-
-				}
-			});
-		}
 		
 		/*-----------onCreateDialog method END ------ */
 

@@ -7,13 +7,17 @@ import java.util.List;
 import com.github.GroupActivity;
 import com.github.R;
 import com.github.commits.CommitsActivity;
+import com.github.helper.AppStatus;
 import com.github.helper.Constants;
 import com.github.helper.OrganisationUserCommitsParseResult;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -27,10 +31,11 @@ import android.widget.Toast;
 
 public class OrganisationSearchCommitActivity extends Activity {
 	
+	AppStatus mAppStatus;
+	public ProgressDialog mProgressDialog;
 	private int year;
 	private int month;
 	private int day;
-	//private DatePicker dpResult;
 	static final int DATE_DIALOG_ID = 999;
 	
 	TextView txtUserDate;
@@ -53,9 +58,13 @@ public class OrganisationSearchCommitActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.user_commit_layout);
 		
+		mAppStatus = AppStatus.getInstance(this);
+		
 		txtUserDate=(TextView) findViewById(R.id.userDate);
 		btnDatePicker = (DatePicker) findViewById(R.id.datePickerButton);
 		userSpinner = (Spinner) findViewById(R.id.spinnerUserCommits);
+		
+		txtUserDate.setVisibility(View.INVISIBLE);
 		
 		strJsonResponse=getIntent().getExtras().getString("response");
 		owner=getIntent().getExtras().getString("owner");
@@ -90,7 +99,7 @@ public class OrganisationSearchCommitActivity extends Activity {
 	        year = btnDatePicker.getYear();
 	        txtUserDate.setText(day+"-"+month+"-"+year);
 	       
-	        Toast.makeText(this, day+"/"+month+"/"+year, Toast.LENGTH_SHORT).show();
+	       // Toast.makeText(this, day+"/"+month+"/"+year, Toast.LENGTH_SHORT).show();
 	    }
 	 
 	public void onSearchClick(String jsonResponse){
@@ -121,7 +130,7 @@ public class OrganisationSearchCommitActivity extends Activity {
 				
 						commiterName=(String) userSpinner.getItemAtPosition(arg2);
 						
-						Toast.makeText(OrganisationSearchCommitActivity.this, commiterName,Toast.LENGTH_SHORT).show();
+					//	Toast.makeText(OrganisationSearchCommitActivity.this, commiterName,Toast.LENGTH_SHORT).show();
 			
 						
 					}
@@ -163,7 +172,6 @@ public class OrganisationSearchCommitActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				
 							
 		        day = btnDatePicker.getDayOfMonth();
 		        month = btnDatePicker.getMonth()+1;
@@ -171,20 +179,62 @@ public class OrganisationSearchCommitActivity extends Activity {
 				txtUserDate.setText(day+"-"+month+"-"+year);
 				
 				date=day+"-"+month+"-"+year;
-				Intent i=new Intent(getParent(),OrganisationUserCommitsActivity.class);
-				
-				i.putExtra("owner", owner);
-				i.putExtra("reponame", repoName);
-				i.putExtra("branchname",branchName);
-				i.putExtra("committer_name",commiterName);
-				i.putExtra("date", date);
-				GroupActivity parentActivity = (GroupActivity)getParent();
-				parentActivity.startChildActivity("orgUserCommits intent", i);
+				btnOk.setEnabled(false);
+				showDialog(0);
+				if (mAppStatus.isOnline(OrganisationSearchCommitActivity.this)) {
+					OrganisationUserCommitsTask mCommitsTask = new OrganisationUserCommitsTask(OrganisationSearchCommitActivity.this, branchName,owner,repoName,commiterName,date);
+					mCommitsTask.execute(branchName);
+				}
+//				Intent i=new Intent(getParent(),OrganisationUserCommitsActivity.class);
+//				
+//				i.putExtra("owner", owner);
+//				i.putExtra("reponame", repoName);
+//				i.putExtra("branchname",branchName);
+//				i.putExtra("committer_name",commiterName);
+//				i.putExtra("date", date);
+//				GroupActivity parentActivity = (GroupActivity)getParent();
+//				parentActivity.startChildActivity("orgUserCommits intent", i);
 				
 			}
 		});
 		
 	}
+
+	
+	public void commitsResponce(String strResponse){
+		Constants.flagUserCommit=true;
+		Intent i=new Intent(getParent(),OrganisationUserCommitsActivity.class);
+		i.putExtra("commitResponse", strResponse);
+		i.putExtra("owner", owner);
+		i.putExtra("reponame", repoName);
+		i.putExtra("branchname",branchName);
+		i.putExtra("committer_name",commiterName);
+		i.putExtra("date", date);
+		GroupActivity parentActivity = (GroupActivity)getParent();
+		parentActivity.startChildActivity("orgUserSearchCommits intent", i);	
+		
+	}
+	
+	
+	// Shows progress dialog box
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		final ProgressDialog dialog = new ProgressDialog(this);
+		dialog.setTitle("Please Wait...");
+		dialog.setMessage("Loading.....");
+		dialog.setIndeterminate(true);
+		dialog.setCancelable(true);
+		dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+			@Override
+			public void onCancel(DialogInterface dialog) {
+				Log.i("GitHub", "user cancelling authentication");
+
+			}
+		});
+		mProgressDialog = dialog;
+		return dialog;
+	}
+	
 //	@Override
 //	protected Dialog onCreateDialog(int id) {
 //		switch (id) {

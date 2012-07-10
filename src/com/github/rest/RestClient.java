@@ -97,8 +97,6 @@ public class RestClient {
 //			ResponseHandler<String> responseHandler = new BasicResponseHandler();
 //			result = httpclient.execute(httpget, responseHandler);
 //			return result;
-					
-		  
 			
 			HttpGet httpGet = new HttpGet(base_url + url);
 			ResponseHandler<String> responseHandler = new BasicResponseHandler();
@@ -110,9 +108,5 @@ public class RestClient {
 
 		return result;
 	}
-
-	
-
-	
 
 }

@@ -6,6 +6,7 @@ import com.github.GroupActivity;
 import com.github.LoginInActivity;
 import com.github.R;
 import com.github.commits.CommitsActivity;
+import com.github.commits.CommitsTask;
 import com.github.helper.AppStatus;
 import com.github.helper.BranchParserResult;
 import com.github.helper.Constants;
@@ -45,6 +46,7 @@ public class BranchActivity extends Activity {
 	String userName;
 	String branchName;
 	String repoName;
+	String branchResponse;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -64,29 +66,31 @@ public class BranchActivity extends Activity {
 				Constants.BranchTableName);
 		mBranchDataModel = new BranchDataModel();
 
-		try {
+//		try {
 			//getting all branches Data from API into response
-			//userName=mAppStatus.getSharedUserName(Constants.LOGIN_USERNAME);
+
+			branchResponse=getIntent().getExtras().getString("branchResponse");
 			userName=getIntent().getExtras().getString("username");
-			repoName=getIntent().getExtras().getString("reponame");
+			repoName=getIntent().getExtras().getString("reponame");	
 			
-			//String pageNumber = new Integer(PageNo).toString();
-			if (mAppStatus.isOnline(BranchActivity.this)) {		
-				showDialog(0);
+//			if (mAppStatus.isOnline(BranchActivity.this)) {		
+//				showDialog(0);
 				
 				mBranchDBAdapter.deleteAll();
-			
-				BranchTask mBranchTask = new BranchTask(this, userName,repoName);
-				mBranchTask.execute(userName);
-			}else{
-				generateList();
-				onListClick();
-			}
-			
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+				branchResponce(branchResponse);
+				
+				
+//				BranchTask mBranchTask = new BranchTask(this, userName,repoName);
+//				mBranchTask.execute(userName);
+//			}else{
+//				generateList();
+//				onListClick();
+//			}
+//			
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 	
 	
@@ -109,7 +113,7 @@ public class BranchActivity extends Activity {
 				mBranchDBAdapter.create(branchValues);
 			
 			}
-			dismissDialog(0);
+			//dismissDialog(0);
 			generateList();
 			onListClick();
 		}	
@@ -132,64 +136,46 @@ public class BranchActivity extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1,
 					int position, long arg3) {
-
+				
+				showDialog(0);
 				if (mAppStatus.isOnline(BranchActivity.this)) {
 					
 					branchName = (branchData.get(position)).toString();
 					Log.d("branch name---", "" + branchName);
 				
-					//String pageNumber = new Integer(PageNo).toString();
 					
-					Intent intent = new Intent(getParent(),CommitsActivity.class);
+					CommitsTask mCommitsTask = new CommitsTask(BranchActivity.this, branchName,userName,repoName);
+					mCommitsTask.execute(branchName);
 					
-					intent.putExtra("username", userName);
-					intent.putExtra("reponame", repoName);
-					intent.putExtra("branchname",branchName);
-					//startActivity(intent);
-					
-					GroupActivity parentActivity = (GroupActivity)getParent();
-					parentActivity.startChildActivity("commit intent", intent);
-
-					
+//					Intent intent = new Intent(getParent(),CommitsActivity.class);
+//					
+//					intent.putExtra("username", userName);
+//					intent.putExtra("reponame", repoName);
+//					intent.putExtra("branchname",branchName);
+//					GroupActivity parentActivity = (GroupActivity)getParent();
+//					parentActivity.startChildActivity("commit intent", intent);
 					
 				} else {
+					dismissDialog(0);
 					Log.d("Please check you internet connection", "Check");
+					
 					//showMessage("Please check you internet connection!!");
 				}
 			}
 		});
 		}
 	
-	void showLoading(final boolean show, final String title, final String msg) {
-		mhandler.post(new Runnable() {
-			@Override
-			public void run() {
-				if (show) {
-					if (loading != null) {
-						loading.setTitle(title);
-						loading.setMessage(msg);
-						loading.show();
-					}
-				} else {
-					loading.cancel();
-					loading.dismiss();
-				}
-
-			}
-		});
-	}
-
-	void message(String msg) {
-		final String mesage = msg;
-		mhandler.post(new Runnable() {
-			@Override
-			public void run() {
-				Toast toast = Toast.makeText(BranchActivity.this, mesage, 8000);
-				toast.show();
-			}
-		});
+	public void commitsResponce(String strResponse){
+		Intent intent = new Intent(getParent(),CommitsActivity.class);
+		intent.putExtra("commitsResponce", strResponse);
+		intent.putExtra("username", userName);
+		intent.putExtra("reponame", repoName);
+		intent.putExtra("branchname",branchName);
+		GroupActivity parentActivity = (GroupActivity)getParent();
+		parentActivity.startChildActivity("commit intent", intent);
 	}
 	
+
 	// Shows progress dialog box
 	@Override
 	protected Dialog onCreateDialog(int id) {

@@ -51,6 +51,7 @@ public class OrganisationCommitActivity extends Activity {
 	
 	String Response;
 	Button btnSearch;
+	String commitResponse;
 	
 		@Override
 		public void onCreate(Bundle savedInstanceState) {
@@ -94,30 +95,30 @@ public class OrganisationCommitActivity extends Activity {
 				Constants.CommitsTableName);
 		mCommitsDataModel = new CommitsDataModel();
 
-		try {
+//		try {
 			
 				//getting all commits Data from API into response
+				commitResponse=getIntent().getExtras().getString("commitResponse");
 				owner=getIntent().getExtras().getString("owner");
 				branchName=getIntent().getExtras().getString("branchname");
 				repoName=getIntent().getExtras().getString("reponame");
-				
-				
-				//String pageNumber = new Integer(PageNo).toString();
-				if (mAppStatus.isOnline(OrganisationCommitActivity.this)) {	
-					showDialog(0);				
+
+//				if (mAppStatus.isOnline(OrganisationCommitActivity.this)) {	
+//					showDialog(0);				
 					
 					mCommitsDBAdapter.deleteAll();	
-					OrganisationCommitTask mCommitsTask = new OrganisationCommitTask(this, branchName,owner,repoName);
-					mCommitsTask.execute(branchName);
+					commitsResponce(commitResponse);
+//					OrganisationCommitTask mCommitsTask = new OrganisationCommitTask(this, branchName,owner,repoName);
+//					mCommitsTask.execute(branchName);
 					
-				}else{
-					generateList();
-				}
-			
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//				}else{
+//					generateList();
+//				}
+//			
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 
 	}
 	
@@ -146,7 +147,7 @@ public class OrganisationCommitActivity extends Activity {
 				mCommitsDBAdapter.create(commitsValues);
 			
 			}
-			dismissDialog(0);
+		//	dismissDialog(0);
 			generateList();
 		}	
 	}
@@ -163,39 +164,6 @@ public class OrganisationCommitActivity extends Activity {
 	}
 	
 
-	
-	
-	void showLoading(final boolean show, final String title, final String msg) {
-		mhandler.post(new Runnable() {
-			@Override
-			public void run() {
-				if (show) {
-					if (loading != null) {
-						loading.setTitle(title);
-						loading.setMessage(msg);
-						loading.show();
-					}
-				} else {
-					loading.cancel();
-					loading.dismiss();
-				}
-
-			}
-		});
-	}
-
-	void message(String msg) {
-		final String mesage = msg;
-		mhandler.post(new Runnable() {
-			@Override
-			public void run() {
-				Toast toast = Toast.makeText(OrganisationCommitActivity.this, mesage, 8000);
-				toast.show();
-			}
-		});
-	}
-	
-	
 	// Shows progress dialog box
 	@Override
 	protected Dialog onCreateDialog(int id) {

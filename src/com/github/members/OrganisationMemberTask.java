@@ -15,11 +15,12 @@ import android.widget.Toast;
 
 import com.github.helper.AppStatus;
 import com.github.helper.Constants;
+import com.github.organisation.OrganisationRepositoryActivity;
 import com.github.rest.RestClient;
 
 public class OrganisationMemberTask extends AsyncTask<String, Void, String> {
 
-	private OrganisationMemberActivity context;
+	private OrganisationRepositoryActivity context;
 	AppStatus mAppStatus;
 	private String strOrganisation;
 
@@ -39,7 +40,7 @@ public class OrganisationMemberTask extends AsyncTask<String, Void, String> {
 
 
 
-	public OrganisationMemberTask(OrganisationMemberActivity context,String organisation)
+	public OrganisationMemberTask(OrganisationRepositoryActivity context,String organisation)
 	{
 		this.context = context;
 		this.strOrganisation=organisation;

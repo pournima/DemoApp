@@ -1,6 +1,7 @@
 package com.github.organisation;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +18,7 @@ import com.github.rest.RestClient;
 
 public class OrganisationUserCommitsTask extends AsyncTask<String, Void, String> {
 
-	private OrganisationUserCommitsActivity context;
+	private OrganisationSearchCommitActivity context;
 	AppStatus mAppStatus;
 	private String strBranchName;
 	private String strUserName;
@@ -38,7 +39,7 @@ public class OrganisationUserCommitsTask extends AsyncTask<String, Void, String>
 	}
 
 
-	public OrganisationUserCommitsTask(OrganisationUserCommitsActivity context,String branchName,String userName,String repoName,String commiterName,String date)
+	public OrganisationUserCommitsTask(OrganisationSearchCommitActivity context,String branchName,String userName,String repoName,String commiterName,String date)
 	{
 		this.context = context;
 		this.strBranchName=branchName;
@@ -61,13 +62,13 @@ public class OrganisationUserCommitsTask extends AsyncTask<String, Void, String>
 			
 			params.add(new BasicNameValuePair(Constants.AUTH_KEY, mAppStatus
 			.getSharedStringValue(Constants.AUTH_KEY)));
-			
-			
+				
 				params.add(new BasicNameValuePair("owner", strUserName));
 				params.add(new BasicNameValuePair("repository", strRepoName));
 				params.add(new BasicNameValuePair(Constants.BRANCH, strBranchName));
-				params.add(new BasicNameValuePair("committer_name", strCommitter_name));
+				params.add(new BasicNameValuePair("committer_name", URLEncoder.encode(strCommitter_name)));
 				params.add(new BasicNameValuePair("date", strDate));		
+				//URLEncoder.encode(strCommitter_name);
 				try {	
 				if (mAppStatus.isOnline(context)) 
 				{
@@ -81,10 +82,7 @@ public class OrganisationUserCommitsTask extends AsyncTask<String, Void, String>
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-	
-			
 
-		
 		return strJsonReponse;
 	
 	}
@@ -98,13 +96,13 @@ public class OrganisationUserCommitsTask extends AsyncTask<String, Void, String>
 		if (strJsonReponse.equals("[]")) {
 			
 			context.dismissDialog(0);
-			
+			context.btnOk.setEnabled(true);
 			Toast.makeText(context,"No commits for this user",Toast.LENGTH_SHORT).show();
 			
 			Log.i("JSON RESPONSE::::","Data not found...!!");
 
 		} else {
-			/* RepositoryActivity' activity */
+			/* commits user Activity' activity */
 			
 			context.dismissDialog(0);
 			context.commitsResponce(strJsonReponse);

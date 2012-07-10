@@ -18,7 +18,7 @@ import com.github.rest.RestClient;
 
 public class OrganisationBranchTask extends AsyncTask<String, Void, String> {
 
-	private OrganisationBranchActivity context;
+	private OrganisationRepositoryActivity context;
 	AppStatus mAppStatus;
 	private String strOwner;
 	private String strRepoName;
@@ -36,7 +36,7 @@ public class OrganisationBranchTask extends AsyncTask<String, Void, String> {
 
 
 
-	public OrganisationBranchTask(OrganisationBranchActivity context,String owner,String repoName)
+	public OrganisationBranchTask(OrganisationRepositoryActivity context,String owner,String repoName)
 	{
 		this.context = context;
 		this.strOwner=owner;

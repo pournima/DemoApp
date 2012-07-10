@@ -4,14 +4,11 @@ import java.util.ArrayList;
 
 import com.github.GroupActivity;
 import com.github.R;
-import com.github.branch.BranchActivity;
 import com.github.helper.AppStatus;
 import com.github.helper.Constants;
 import com.github.helper.OrganisationRepositoryParseResult;
 import com.github.members.OrganisationMemberActivity;
 import com.github.members.OrganisationMemberTask;
-import com.github.repository.RepositoryActivity;
-import com.github.repository.RepositoryListAdapter;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -33,7 +30,6 @@ import android.widget.Toast;
 public class OrganisationRepositoryActivity extends Activity {
 
 	public ProgressDialog mProgressDialog;
-	private ProgressDialog loading;
 	Handler mhandler;
 	
 	String organisationRepo;
@@ -53,6 +49,8 @@ public class OrganisationRepositoryActivity extends Activity {
 	String strJsonResponse;
 	String strOrganisation;
 	
+	String repoOwner;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -66,34 +64,50 @@ public class OrganisationRepositoryActivity extends Activity {
 		
 		Log.d("repo response", strJsonResponse);
 		getOrganisationRepository(strJsonResponse);
+		btnMember=(Button) findViewById(R.id.buttonMember);
 		
 		onMemberButtonClick();
 		
 	}
 	
-	
 	private void onMemberButtonClick(){
-		btnMember=(Button) findViewById(R.id.buttonMember);
-		
-		
+
 		btnMember.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
+				showDialog(0);
+				if (mAppStatus.isOnline(OrganisationRepositoryActivity.this)) {	
+					OrganisationMemberTask orgMemberTask=new OrganisationMemberTask(OrganisationRepositoryActivity.this,strOrganisation);
+					orgMemberTask.execute(strOrganisation);
 				
-				Intent i=new Intent(getParent(), OrganisationMemberActivity.class);
-
-				i.putExtra("organisation", strOrganisation);
-				
-				GroupActivity parentActivity = (GroupActivity)getParent();
-				parentActivity.startChildActivity("orgMember intent", i);
+				}
+				else
+				{
+					dismissDialog(0);
+				}
+//				Intent i=new Intent(getParent(), OrganisationMemberActivity.class);
+//
+//				i.putExtra("organisation", strOrganisation);
+//				
+//				GroupActivity parentActivity = (GroupActivity)getParent();
+//				parentActivity.startChildActivity("orgMember intent", i);
 				
 			}
 		});
 		
 	}
 	
+	public void memberResponse(String strResponse){
+		
+		Intent i=new Intent(getParent(), OrganisationMemberActivity.class);
+		i.putExtra("memberResponse", strResponse);
+		i.putExtra("organisation", strOrganisation);
+		
+		GroupActivity parentActivity = (GroupActivity)getParent();
+		parentActivity.startChildActivity("orgMember intent", i);	
+	}
 
 	private void getOrganisationRepository(String strJsonResponse) {
 		
@@ -139,25 +153,30 @@ public class OrganisationRepositoryActivity extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1,
 					int position, long arg3) {
-
+				
+				showDialog(0);
 				if (mAppStatus.isOnline(OrganisationRepositoryActivity.this)) {
 										
 					orgRepositoryName = (orgRepositoryData.get(position)).toString();
 					Log.d("Organisation Repository name---", "" + orgRepositoryName);
 
-					String repoOwner=orgRepositoryData.get(position).owner.toString();
+					repoOwner=orgRepositoryData.get(position).owner.toString();
 					Log.d("Owner---", "" + repoOwner);
 					
-					Intent i=new Intent(getParent(), OrganisationBranchActivity.class);
 					
-					i.putExtra("owner", repoOwner);
-					i.putExtra("reponame", orgRepositoryName);
-					
-					GroupActivity parentActivity = (GroupActivity)getParent();
-					parentActivity.startChildActivity("branch intent", i);
+					OrganisationBranchTask mBranchTask = new OrganisationBranchTask(OrganisationRepositoryActivity.this, repoOwner,orgRepositoryName);
+					mBranchTask.execute(repoOwner);
+//					
+//					Intent i=new Intent(getParent(), OrganisationBranchActivity.class);
+//					
+//					i.putExtra("owner", repoOwner);
+//					i.putExtra("reponame", orgRepositoryName);
+//					
+//					GroupActivity parentActivity = (GroupActivity)getParent();
+//					parentActivity.startChildActivity("branch intent", i);
 					
 				} else {
-					// dismissDialog(0);
+					dismissDialog(0);
 					Log.d("Please check you internet connection", "Check");
 					//showMessage("Please check you internet connection!!");
 
@@ -167,12 +186,24 @@ public class OrganisationRepositoryActivity extends Activity {
 	}
 
 	
+	
+	public void branchResponce(String strResponse){
+
+		Intent i=new Intent(getParent(), OrganisationBranchActivity.class);
+		
+		i.putExtra("strResponse", strResponse);
+		i.putExtra("owner", repoOwner);
+		i.putExtra("reponame", orgRepositoryName);	
+		GroupActivity parentActivity = (GroupActivity)getParent();
+		parentActivity.startChildActivity("branch intent", i);
+	}
 	/*---------- Backup button captured ----------------- */
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			Log.i("Backup Button", "Pressed");
+			
 			warningDialogBox();
 			
 		}
@@ -180,37 +211,6 @@ public class OrganisationRepositoryActivity extends Activity {
 		return super.onKeyDown(keyCode, event);
 	}
 
-	
-	void showLoading(final boolean show, final String title, final String msg) {
-		mhandler.post(new Runnable() {
-			@Override
-			public void run() {
-				if (show) {
-					if (loading != null) {
-						loading.setTitle(title);
-						loading.setMessage(msg);
-						loading.show();
-					}
-				} else {
-					loading.cancel();
-					loading.dismiss();
-				}
-
-			}
-		});
-	}
-
-	void message(String msg) {
-		final String mesage = msg;
-		mhandler.post(new Runnable() {
-			@Override
-			public void run() {
-				Toast toast = Toast.makeText(OrganisationRepositoryActivity.this, mesage, 8000);
-				toast.show();
-			}
-		});
-	}
-	
 	
 	// Shows progress dialog box
 	@Override

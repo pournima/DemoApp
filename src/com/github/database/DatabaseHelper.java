@@ -21,7 +21,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		try {	
 			
 			String createSql = "CREATE TABLE Repository (_id INTEGER PRIMARY KEY AUTOINCREMENT, "
-					+ "name TEXT);";
+					+ "name TEXT UNIQUE);";
 			
 			Log.v("GitHub", "Creating Repository: " + createSql);
 			db.execSQL(createSql);
@@ -48,7 +48,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		
 			createSql=null;
 			createSql = "CREATE TABLE OrganisationRepository (_id INTEGER PRIMARY KEY AUTOINCREMENT, "
-					+ "name TEXT , "
+					+ "name TEXT UNIQUE, "
 					+ "owner TEXT);";
 			
 			Log.v("GitHub", "Creating Organisation Repository: " + createSql);

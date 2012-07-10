@@ -61,14 +61,16 @@ public class OrganisationActivity extends Activity {
 			//getting all Repo Data from API into response
 			
 			//String pageNumber = new Integer(PageNo).toString();
+			showDialog(0);
 			if (mAppStatus.isOnline(OrganisationActivity.this)) {		
-				showDialog(0);
+				
 				mOrganisationDBAdapter.deleteAll();
 				
 				OrganisationTask mOrganisationTask = new OrganisationTask(this);
 				mOrganisationTask.execute();
 			}
 			else{
+				dismissDialog(0);
 				generateList();
 				onListClick();
 			}
@@ -129,20 +131,21 @@ public class OrganisationActivity extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1,
 					int position, long arg3) {
-
+				
+				showDialog(0);
 				if (mAppStatus.isOnline(OrganisationActivity.this)) {
 					
 					
 					orgName = (organisationData.get(position)).toString();
 					Log.d("Organisation name---", "" + orgName);
 					
-					showDialog(0);
+					
 					OrganisationRepositoryTask mOrganisationRepositoryTask = new OrganisationRepositoryTask(OrganisationActivity.this,orgName);
 					mOrganisationRepositoryTask.execute(orgName);
 					
 
 				} else {
-					// dismissDialog(0);
+					dismissDialog(0);
 					Log.d("Please check you internet connection", "Check");
 					//showMessage("Please check you internet connection!!");
 

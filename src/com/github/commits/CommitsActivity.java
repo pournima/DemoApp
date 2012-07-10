@@ -40,6 +40,7 @@ public class CommitsActivity extends Activity {
 	String branchName;
 	String repoName;
 	String Response;
+	String commitsResponce;
 	Button btnSearch;
 	
 	Boolean flag=true;
@@ -57,10 +58,7 @@ public class CommitsActivity extends Activity {
 			super.onCreate(savedInstanceState);
 			setContentView(R.layout.commit_layout);
 
-			//tvuser.setText(user);
-			
 			getCommitData();
-			//generateList();
 
 			btnSearch=(Button) findViewById(R.id.buttonSearch);
 			
@@ -92,31 +90,30 @@ public class CommitsActivity extends Activity {
 				Constants.CommitsTableName);
 		mCommitsDataModel = new CommitsDataModel();
 
-		try {
+//		try {
 	
-			
 			//getting all commits Data from API into response
+			commitsResponce=getIntent().getExtras().getString("commitsResponce");
 			userName=getIntent().getExtras().getString("username");
 			branchName=getIntent().getExtras().getString("branchname");
 			repoName=getIntent().getExtras().getString("reponame");
-			
-			//String pageNumber = new Integer(PageNo).toString();
-			if (mAppStatus.isOnline(CommitsActivity.this)) {	
-				showDialog(0);				
+
+//			if (mAppStatus.isOnline(CommitsActivity.this)) {	
+//				showDialog(0);				
 				
 				mCommitsDBAdapter.deleteAll();
+				commitsResponce(commitsResponce);
+//				CommitsTask mCommitsTask = new CommitsTask(this, branchName,userName,repoName);
+//				mCommitsTask.execute(branchName);
 				
-				CommitsTask mCommitsTask = new CommitsTask(this, branchName,userName,repoName);
-				mCommitsTask.execute(branchName);
-				
-			}else{
-				generateList();
-			}
-
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//			}else{
+//				generateList();
+//			}
+//
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 
 	}
 	
@@ -140,7 +137,7 @@ public class CommitsActivity extends Activity {
 				mCommitsDBAdapter.create(commitsValues);
 			
 			}
-			dismissDialog(0);
+			//dismissDialog(0);
 			generateList();
 	
 	}
@@ -157,37 +154,7 @@ public class CommitsActivity extends Activity {
 	}
 	
 	
-	void showLoading(final boolean show, final String title, final String msg) {
-		mhandler.post(new Runnable() {
-			@Override
-			public void run() {
-				if (show) {
-					if (loading != null) {
-						loading.setTitle(title);
-						loading.setMessage(msg);
-						loading.show();
-					}
-				} else {
-					loading.cancel();
-					loading.dismiss();
-				}
 
-			}
-		});
-	}
-
-	void message(String msg) {
-		final String mesage = msg;
-		mhandler.post(new Runnable() {
-			@Override
-			public void run() {
-				Toast toast = Toast.makeText(CommitsActivity.this, mesage, 8000);
-				toast.show();
-			}
-		});
-	}
-	
-	
 	// Shows progress dialog box
 	@Override
 	protected Dialog onCreateDialog(int id) {

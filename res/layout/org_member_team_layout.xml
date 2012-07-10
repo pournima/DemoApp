@@ -1,8 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#FFFFFF"
     android:orientation="vertical" >
     
+     <TextView
+         android:id="@+id/header"
+        android:layout_width="fill_parent"
+        android:layout_height="55dp"
+        android:background="@drawable/image1"        
+         />
+    
+    <TextView
+        android:id="@+id/textViewMemberTeam"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="15dp"
+        android:text="@string/MemberTeam"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        android:layout_gravity="center"/>
+	
+    
+	<ListView 
+	    android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:cacheColorHint="@color/transparent"
+		android:id="@+id/listViewMemberTeam"
+		android:layout_below="@+id/header">	    
+	</ListView>
 
-</LinearLayout>
+</RelativeLayout>

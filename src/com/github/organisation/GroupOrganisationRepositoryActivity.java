@@ -19,7 +19,7 @@ public class GroupOrganisationRepositoryActivity extends GroupActivity {
 		// TODO Auto-generated method stub
 		super.onResume();
 		mIdList.clear();
-		startChildActivity("Repository", new Intent(GroupOrganisationRepositoryActivity.this,OrganisationActivity.class));
+		startChildActivity("Org Repository", new Intent(GroupOrganisationRepositoryActivity.this,OrganisationActivity.class));
 	}
 
 }

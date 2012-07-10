@@ -5,6 +5,7 @@ import com.github.GroupActivity;
 import com.github.LoginTask;
 import com.github.R;
 import com.github.branch.BranchActivity;
+import com.github.branch.BranchTask;
 import com.github.helper.AppStatus;
 import com.github.helper.Constants;
 import com.github.helper.RepositoryParserResult;
@@ -28,7 +29,6 @@ import android.widget.Toast;
 public class RepositoryActivity extends Activity {
 	
 	public ProgressDialog mProgressDialog;
-	private ProgressDialog loading;
 	Handler mhandler;
 	
 	String userName;
@@ -59,34 +59,34 @@ public class RepositoryActivity extends Activity {
 			userName=mAppStatus.getSharedUserName(Constants.LOGIN_USERNAME);
 			//userName=getIntent().getExtras().getString("username");
 			
-			if(Constants.gitflag.booleanValue()){
-				showDialog(0);
-				if (mAppStatus.isOnline(RepositoryActivity.this)) {
-			
-					LoginTask mLoginTask = new LoginTask(RepositoryActivity.this,userName);
-					mLoginTask.execute(userName);
-					
-					if(Constants.flagAuthonticate){
-						getRepositoryData();
-					}
-					
-				} else {
-					
-					Log.v("SPLASH_SCREEN", "You are not online!!!!");
-					// showLoading(false, "", "");
-					warningDialogBox("Please check you internet connection!!");
-				}
-			}else{
-
-				getRepositoryData();
-				
-			}
+//			if(Constants.gitflag.booleanValue()){
+//				showDialog(0);
+//				if (mAppStatus.isOnline(RepositoryActivity.this)) {
+//			
+//					LoginTask mLoginTask = new LoginTask(RepositoryActivity.this,userName);
+//					mLoginTask.execute(userName);
+//					
+//					if(Constants.flagAuthonticate){
+//						getRepositoryData();
+//					}
+//					
+//				} else {
+//					
+//					Log.v("SPLASH_SCREEN", "You are not online!!!!");
+//					// showLoading(false, "", "");
+//					warningDialogBox("Please check you internet connection!!");
+//				}
+//			}else{
+//				
+//				getRepositoryData();
+//				
+//			}
+			getRepositoryData();
 			//generateList();
 			//onListClick();
 			
 		}
-		
-		
+	
 	private void getRepositoryData(){
 
 		mRepositoryDBAdapter = new RepositoryDBAdapter(this,
@@ -95,16 +95,17 @@ public class RepositoryActivity extends Activity {
 
 		try {
 			//getting all Repo Data from API into response
+			showDialog(0);
 			
-			//String pageNumber = new Integer(PageNo).toString();
 			if (mAppStatus.isOnline(RepositoryActivity.this)) {		
-				showDialog(0);
+				
 				mRepositoryDBAdapter.deleteAll();
 				
 				RepositoryTask mRepositoryTask = new RepositoryTask(this, userName);
 				mRepositoryTask.execute(userName);
 			}
 			else{
+				dismissDialog(0);
 				generateList();
 				onListClick();
 			}
@@ -160,27 +161,26 @@ public class RepositoryActivity extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1,
 					int position, long arg3) {
-
+				
+				showDialog(0);
 				if (mAppStatus.isOnline(RepositoryActivity.this)) {
 					
 					repoName = (repositoryData.get(position)).toString();
-					Log.d("Repository name---", "" + repoName);
+					Log.d("Repository name---", "" + repoName);				
 					
-					//String pageNumber = new Integer(PageNo).toString();
+					BranchTask mBranchTask = new BranchTask(RepositoryActivity.this, userName,repoName);
+					mBranchTask.execute(userName);
 					
-					Intent i=new Intent(getParent(), BranchActivity.class);
-					
-					i.putExtra("username", userName);
-					i.putExtra("reponame", repoName);
-					//startActivity(intent);
-					
-					GroupActivity parentActivity = (GroupActivity)getParent();
-					parentActivity.startChildActivity("branch intent", i);
+//					Intent i=new Intent(getParent(), BranchActivity.class);
+//					i.putExtra("username", userName);
+//					i.putExtra("reponame", repoName);
+//					GroupActivity parentActivity = (GroupActivity)getParent();
+//					parentActivity.startChildActivity("branch intent", i);
 					
 				} else {
-					// dismissDialog(0);
+					dismissDialog(0);
 					Log.d("Please check you internet connection", "Check");
-					//showMessage("Please check you internet connection!!");
+					
 
 				}
 			}
@@ -189,6 +189,18 @@ public class RepositoryActivity extends Activity {
 		
 		}
 
+	public void branchResponce(String strJsonResponse){
+
+		Log.i("branch Response --- ", String.valueOf(strJsonResponse));
+		
+		Intent i=new Intent(getParent(), BranchActivity.class);
+		i.putExtra("branchResponse", strJsonResponse);
+		i.putExtra("username", userName);
+		i.putExtra("reponame", repoName);
+		GroupActivity parentActivity = (GroupActivity)getParent();
+		parentActivity.startChildActivity("branch intent", i);
+		
+	}
 
 	/*---------- Backup button captured ----------------- */
 	@Override
@@ -203,38 +215,6 @@ public class RepositoryActivity extends Activity {
 		return super.onKeyDown(keyCode, event);
 	}
 
-	
-	void showLoading(final boolean show, final String title, final String msg) {
-		mhandler.post(new Runnable() {
-			@Override
-			public void run() {
-				if (show) {
-					if (loading != null) {
-						loading.setTitle(title);
-						loading.setMessage(msg);
-						loading.show();
-					}
-				} else {
-					loading.cancel();
-					loading.dismiss();
-				}
-
-			}
-		});
-	}
-
-	void message(String msg) {
-		final String mesage = msg;
-		mhandler.post(new Runnable() {
-			@Override
-			public void run() {
-				Toast toast = Toast.makeText(RepositoryActivity.this, mesage, 8000);
-				toast.show();
-			}
-		});
-	}
-	
-	
 	// Shows progress dialog box
 	@Override
 	protected Dialog onCreateDialog(int id) {
@@ -298,41 +278,5 @@ public class RepositoryActivity extends Activity {
 		AlertDialog alert = builder.create();
 		alert.show();
 	}
-	
-//	@Override
-//	public boolean onCreateOptionsMenu(Menu menu) {
-//		MenuInflater inflater = getMenuInflater();
-//		inflater.inflate(R.menu.menu, menu);
-//		return true;
-//
-//	}
-//
-//	@Override
-//	public boolean onOptionsItemSelected(MenuItem item) {
-//		 if(item.getItemId()==R.id.menuLogOut){
-//			//***LogOut
-//
-//			AppStatus mAppStatus=new AppStatus();
-//			mAppStatus.clearAuthKey(Constants.AUTH_KEY);
-//			
-//			Intent intent=new Intent(getApplicationContext(),LoginInActivity.class);
-//			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//			intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-//			//intent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
-//			//intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//			startActivity(intent);
-//			
-//			finish();
-//			
-//		}else if(item.getItemId()==R.id.menuOrganisation){
-//			
-//			Intent intent=new Intent(getApplicationContext(),OrganisationActivity.class);
-//			startActivity(intent);
-//		}
-//
-//		return true;
-//
-//	}
-
 
 }

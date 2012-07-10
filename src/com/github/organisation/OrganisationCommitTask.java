@@ -17,7 +17,7 @@ import com.github.rest.RestClient;
 
 public class OrganisationCommitTask extends AsyncTask<String, Void, String> {
 
-	private OrganisationCommitActivity context;
+	private OrganisationBranchActivity context;
 	AppStatus mAppStatus;
 	private String strBranchName;
 	private String strOwner;
@@ -49,7 +49,7 @@ public class OrganisationCommitTask extends AsyncTask<String, Void, String> {
 	}
 
 
-	public OrganisationCommitTask(OrganisationCommitActivity context,String branchName,String owner,String repoName)
+	public OrganisationCommitTask(OrganisationBranchActivity context,String branchName,String owner,String repoName)
 	{
 		this.context = context;
 		this.strBranchName=branchName;

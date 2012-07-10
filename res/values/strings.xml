@@ -8,8 +8,9 @@
 	<string name="Login">Login</string>
 	<string name="menuLogOut">Log Out</string>
 	<string name="menuOrganisation">Organisation</string>
-	<string name="menuUser">User</string>
+	<string name="menuUser">Repository</string>
 	
+	<string name="MemberTeam">Member Team</string>
 	<string name="OrganisationMember">Organisation Member</string>
 	<string name="Organisation">Organisation</string>
 	<string name="Repository">Repository</string>

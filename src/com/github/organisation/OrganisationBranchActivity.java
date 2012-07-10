@@ -7,11 +7,9 @@ import com.github.R;
 import com.github.branch.BranchDBAdapter;
 import com.github.branch.BranchDataModel;
 import com.github.branch.BranchListAdapter;
-import com.github.commits.CommitsActivity;
 import com.github.helper.AppStatus;
 import com.github.helper.BranchParserResult;
 import com.github.helper.Constants;
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -29,7 +27,6 @@ import android.widget.Toast;
 public class OrganisationBranchActivity extends Activity {
 
 	public ProgressDialog mProgressDialog;
-	private ProgressDialog loading;
 	Handler mhandler;
 	
 	AppStatus mAppStatus;
@@ -43,6 +40,7 @@ public class OrganisationBranchActivity extends Activity {
 	String owner;
 	String branchName;
 	String repoName;
+	String response;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -62,29 +60,30 @@ public class OrganisationBranchActivity extends Activity {
 				Constants.BranchTableName);
 		mBranchDataModel = new BranchDataModel();
 
-		try {
+//		try {
 			//getting all branches Data from API into response
-			//userName=mAppStatus.getSharedUserName(Constants.LOGIN_USERNAME);
-			owner=getIntent().getExtras().getString("owner");
-			repoName=getIntent().getExtras().getString("reponame");
+
+		response=getIntent().getExtras().getString("strResponse");
+		owner=getIntent().getExtras().getString("owner");
+		repoName=getIntent().getExtras().getString("reponame");
 			
 			//String pageNumber = new Integer(PageNo).toString();
-			if (mAppStatus.isOnline(OrganisationBranchActivity.this)) {		
-				showDialog(0);
+//			if (mAppStatus.isOnline(OrganisationBranchActivity.this)) {		
+//				showDialog(0);
 				
 				mBranchDBAdapter.deleteAll();
-			
-				OrganisationBranchTask mBranchTask = new OrganisationBranchTask(this, owner,repoName);
-				mBranchTask.execute(owner);
-			}else{
-				generateList();
-				onListClick();
-			}
-			
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+				branchResponce(response);
+//				OrganisationBranchTask mBranchTask = new OrganisationBranchTask(this, owner,repoName);
+//				mBranchTask.execute(owner);
+//			}else{
+//				generateList();
+//				onListClick();
+//			}
+//			
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 	
 	
@@ -107,7 +106,7 @@ public class OrganisationBranchActivity extends Activity {
 				mBranchDBAdapter.create(branchValues);
 			
 			}
-			dismissDialog(0);
+			
 			generateList();
 			onListClick();
 		}	
@@ -130,26 +129,28 @@ public class OrganisationBranchActivity extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1,
 					int position, long arg3) {
-
+				
+				showDialog(0);
 				if (mAppStatus.isOnline(OrganisationBranchActivity.this)) {
 					
 					branchName = (branchData.get(position)).toString();
 					Log.d("branch name---", "" + branchName);
 				
-					//String pageNumber = new Integer(PageNo).toString();
 					
-					Intent intent = new Intent(getParent(),OrganisationCommitActivity.class);
+					OrganisationCommitTask mCommitsTask = new OrganisationCommitTask(OrganisationBranchActivity.this, branchName,owner,repoName);
+					mCommitsTask.execute(branchName);
 					
-					intent.putExtra("owner", owner);
-					intent.putExtra("reponame", repoName);
-					intent.putExtra("branchname",branchName);
-					//startActivity(intent);
-					
-					GroupActivity parentActivity = (GroupActivity)getParent();
-					parentActivity.startChildActivity("orgCommits intent", intent);
+//					Intent intent = new Intent(getParent(),OrganisationCommitActivity.class);
+//					intent.putExtra("owner", owner);
+//					intent.putExtra("reponame", repoName);
+//					intent.putExtra("branchname",branchName);
+//					
+//					GroupActivity parentActivity = (GroupActivity)getParent();
+//					parentActivity.startChildActivity("orgCommits intent", intent);
 					
 					
 				} else {
+					dismissDialog(0);
 					Log.d("Please check you internet connection", "Check");
 					//showMessage("Please check you internet connection!!");
 				}
@@ -157,37 +158,19 @@ public class OrganisationBranchActivity extends Activity {
 		});
 		}
 	
-	void showLoading(final boolean show, final String title, final String msg) {
-		mhandler.post(new Runnable() {
-			@Override
-			public void run() {
-				if (show) {
-					if (loading != null) {
-						loading.setTitle(title);
-						loading.setMessage(msg);
-						loading.show();
-					}
-				} else {
-					loading.cancel();
-					loading.dismiss();
-				}
-
-			}
-		});
-	}
-
-	void message(String msg) {
-		final String mesage = msg;
-		mhandler.post(new Runnable() {
-			@Override
-			public void run() {
-				Toast toast = Toast.makeText(OrganisationBranchActivity.this, mesage, 8000);
-				toast.show();
-			}
-		});
+	public void commitsResponce(String strResponse){
+		Constants.flagUserCommit=false;
+		Intent intent = new Intent(getParent(),OrganisationCommitActivity.class);
+		intent.putExtra("commitResponse", strResponse);
+		intent.putExtra("owner", owner);
+		intent.putExtra("reponame", repoName);
+		intent.putExtra("branchname",branchName);
+		GroupActivity parentActivity = (GroupActivity)getParent();
+		parentActivity.startChildActivity("orgCommits intent", intent);	
+		
 	}
 	
-	
+
 	// Shows progress dialog box
 	@Override
 	protected Dialog onCreateDialog(int id) {

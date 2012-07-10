@@ -4,7 +4,7 @@ public class Constants {
 
 	public static Boolean gitflag;
 	public static Boolean flagAuthonticate;
-
+	public static Boolean flagUserCommit; 
 	
 	//URL
 	public static final String BRANCH="branch";

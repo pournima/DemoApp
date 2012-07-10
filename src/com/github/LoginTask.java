@@ -12,6 +12,7 @@ import org.json.JSONObject;
 
 import com.github.helper.AppStatus;
 import com.github.helper.Constants;
+import com.github.organisation.GroupOrganisationRepositoryActivity;
 import com.github.repository.GroupRepositoryActivity;
 import com.github.repository.RepositoryActivity;
 import com.github.rest.RestClient;
@@ -25,6 +26,7 @@ import android.widget.Toast;
 
 public class LoginTask extends AsyncTask<String, Void, String> {
 	Context context;
+	LoginInActivity loginContext;
 	AppStatus mAppStatus;
 	String strUserName;
 
@@ -104,7 +106,9 @@ public class LoginTask extends AsyncTask<String, Void, String> {
 				/*---------------------END------------------------- */
 				Constants.flagAuthonticate=true;
 				Constants.gitflag=false;
-				Intent intent = new Intent(context, GroupRepositoryActivity.class); 
+				
+				//loginContext.userAuthenticate(strUserLoginName);
+				Intent intent = new Intent(context, GroupOrganisationRepositoryActivity.class); 
 				intent.putExtra("username",strUserLoginName);
 				context.startActivity(intent);
 				((Activity) context).finish();
@@ -116,6 +120,7 @@ public class LoginTask extends AsyncTask<String, Void, String> {
 				//context.warningDialogBox("Please login User !");
 				((Activity) context).dismissDialog(0);  //To disable progress bar
 				
+				//loginContext.userNotAuthenticate(strUserName);			
 				//Web View --- Github.com
 					Intent intentWeb = new Intent(context, GitHubAppActivity.class);
 					intentWeb.putExtra("username",strUserName);

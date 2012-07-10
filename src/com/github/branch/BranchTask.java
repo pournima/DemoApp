@@ -3,22 +3,20 @@ package com.github.branch;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
-
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
-
 import com.github.helper.AppStatus;
 import com.github.helper.Constants;
+import com.github.repository.RepositoryActivity;
 import com.github.rest.RestClient;
 
 public class BranchTask extends AsyncTask<String, Void, String> {
 
-	private BranchActivity context;
+	private RepositoryActivity context;
 	AppStatus mAppStatus;
 	private String strUserName;
 	private String strRepoName;
@@ -35,7 +33,7 @@ public class BranchTask extends AsyncTask<String, Void, String> {
 	}
 
 
-	public BranchTask(BranchActivity context,String userName,String repoName)
+	public BranchTask(RepositoryActivity context,String userName,String repoName)
 	{
 		this.context = context;
 		this.strUserName=userName;
@@ -49,7 +47,7 @@ public class BranchTask extends AsyncTask<String, Void, String> {
 	protected String doInBackground(String... userName) {
 		// TODO Auto-generated method stub
 		
-		String strJsonReponse = null;
+			String strJsonReponse = null;
 			
 			List<NameValuePair> params = new ArrayList<NameValuePair>(2);
 
@@ -58,24 +56,17 @@ public class BranchTask extends AsyncTask<String, Void, String> {
 			
 			params.add(new BasicNameValuePair("username",userName[0]));
 			params.add(new BasicNameValuePair("repository",strRepoName));
-				
-			
-			//params.add(new BasicNameValuePair("page", "1"));
+
 			try {	
-			if (mAppStatus.isOnline(context)) 
-			{
-
+				if (mAppStatus.isOnline(context)) 
+				{
 					strJsonReponse = RestClient.getInstance(context).doApiCall(Constants.strBranch, "GET", params);
-
-				
-			}
-			else{
-				Log.d("Please check you internet connection", "You are offline");
-			}
+				}
+				else{
+					Log.d("Please check you internet connection", "You are offline");
+				}
 		
-//		} catch (ClientProtocolException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

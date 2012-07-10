@@ -10,13 +10,15 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.github.branch.BranchActivity;
 import com.github.helper.AppStatus;
 import com.github.helper.Constants;
 import com.github.rest.RestClient;
 
 public class CommitsTask extends AsyncTask<String, Void, String> {
 
-	private CommitsActivity context;
+	private BranchActivity context;
 	AppStatus mAppStatus;
 	private String strBranchName;
 	private String strUserName;
@@ -35,7 +37,7 @@ public class CommitsTask extends AsyncTask<String, Void, String> {
 	}
 
 
-	public CommitsTask(CommitsActivity context,String branchName,String userName,String repoName)
+	public CommitsTask(BranchActivity context,String branchName,String userName,String repoName)
 	{
 		this.context = context;
 		this.strBranchName=branchName;
